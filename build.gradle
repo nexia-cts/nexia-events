@@ -11,11 +11,8 @@ base {
 }
 
 repositories {
-    // Add repositories to retrieve artifacts from in here.
-    // You should only use this when depending on other mods because
-    // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-    // See https://docs.gradle.org/current/userguide/declaring_repositories.html
-    // for more information about repositories.
+    maven { url 'https://repo.minebench.de/' }
+    maven { url 'https://maven.nucleoid.xyz' }
 }
 
 dependencies {
@@ -26,6 +23,11 @@ dependencies {
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+    include(implementation("net.kyori:adventure-text-minimessage:4.17.0-SNAPSHOT"))
+    include(implementation("net.kyori:adventure-text-serializer-gson:4.17.0-SNAPSHOT"))
+
+    include(modImplementation include("eu.pb4:sgui:1.5.1+1.20.5"))
 }
 
 processResources {
