@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "id": "nexia-teams",
   "version": "${version}",
-  "name": "NexiaTeams",
-  "description": "",
+  "name": "Nexia Teams",
+  "description": "The shitty thing",
   "authors": [
     "NotInfinityy",
     "NotCoded"
@@ -25,6 +25,6 @@
   "depends": {
     "fabricloader": ">=${loader_version}",
     "fabric": "*",
-    "minecraft": "${minecraft_version}"
+    "minecraft": "~${minecraft_version}"
   }
 }
