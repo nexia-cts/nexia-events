@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "nexia-teams",
+  "version": "${version}",
+  "name": "NexiaTeams",
+  "description": "",
+  "authors": [
+    "NotInfinityy",
+    "NotCoded"
+  ],
+  "contact": {
+    "repo": "https://github.com/nexia-cts/nexia-events"
+  },
+  "license": "All-Rights-Reserved",
+  "icon": "assets/nexia-teams/logo.png",
+  "environment": "server",
+  "entrypoints": {
+    "main": [
+      "com.nexia.teams.NexiaTeams"
+    ]
+  },
+  "mixins": [
+    "nexiateams.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
