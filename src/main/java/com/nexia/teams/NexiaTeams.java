@@ -9,13 +9,12 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.kyori.adventure.text.Component;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
-
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class NexiaTeams implements ModInitializer {
-    public static final String MOD_NAME = "NexiaTeams";
-    public static Logger logger = LogManager.getLogManager().getLogger(MOD_NAME);
+    public static final String MOD_ID = "nexia-teams";
+    public static Logger logger = LoggerFactory.getLogger(MOD_ID);
 
     @Override
     public void onInitialize() {
