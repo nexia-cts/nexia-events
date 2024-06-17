@@ -1,4 +1,4 @@
-package com.nexia.teams;
+package com.nexia.teams.utilities.chat;
 
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
