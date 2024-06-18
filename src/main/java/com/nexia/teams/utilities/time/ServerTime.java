@@ -1,9 +1,10 @@
 package com.nexia.teams.utilities.time;
 
-import com.nexia.teams.koth.KothGameHandler;
+import com.google.common.base.Suppliers;
 import com.nexia.teams.utilities.chat.ChatFormat;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -13,13 +14,12 @@ public class ServerTime {
 
     public static void firstTick(MinecraftServer server) {
         ServerTime.minecraftServer = server;
+        ChatFormat.provider = Suppliers.ofInstance(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY)).get();
     }
 
-    public static void stopServer() {
-        KothGameHandler.stopAllKothGames();
-
+    public static void stopServer(MinecraftServer server) {
         try {
-            for (ServerPlayer player : ServerTime.minecraftServer.getPlayerList().getPlayers()) {
+            for (ServerPlayer player : server.getPlayerList().getPlayers()) {
                 player.connection.disconnect(ChatFormat.convertComponent(MiniMessage.miniMessage().deserialize(String.format("<color:%s>Server is restarting!</color>", ChatFormat.Minecraft.red))));
             }
         } catch (Exception e) {
@@ -27,13 +27,7 @@ public class ServerTime {
         }
     }
 
-    public static void everyTick() {
+    public static void everyTick(MinecraftServer server) {
         totalTickCount++;
-
-        if (totalTickCount % 20 == 0) everySecond();
-    }
-
-    public static void everySecond() {
-        KothGameHandler.kothGamesSecond();
     }
 }
