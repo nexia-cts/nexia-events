@@ -4,15 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class KothGameHandler {
-     static List<KothGame> kothGames = new ArrayList<>();
-
-     public static List<KothGame> getKothGames() {
-         return kothGames;
-     }
+     public static List<KothGame> kothGames = new ArrayList<>();
 
      public static KothGame getKothGameByName(String name) {
           for (KothGame kothGame : kothGames) {
-               if (kothGame.name == name) {
+               if (kothGame.name.equalsIgnoreCase(name)) {
                     return kothGame;
                }
           }
@@ -22,13 +18,16 @@ public class KothGameHandler {
 
      public static void stopAllKothGames() {
           for (KothGame kothGame : kothGames) {
-               kothGame.isRunning = false;
+               kothGame.endGame();
           }
      }
 
      public static void kothGamesSecond() {
-          for (KothGame kothGame : kothGames) {
-               kothGame.kothSecond();
-          }
+          try {
+               for (KothGame kothGame : kothGames) {
+                    if(kothGame == null) return;
+                    kothGame.kothSecond();
+               }
+          } catch (Exception ignored) { }
      }
 }
