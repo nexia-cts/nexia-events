@@ -24,8 +24,12 @@ public class NexiaTeams implements ModInitializer {
         }));
 
         ServerPlayConnectionEvents.JOIN.register(((handler, sender, server) -> {
-            handler.getPlayer().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("hi"))));
+            handler.getPlayer().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text(String.format("%s has joined the game", handler.getPlayer().getScoreboardName())))));
         }));
+
+        ServerPlayConnectionEvents.DISCONNECT.register((((handler, server) -> {
+            handler.getPlayer().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text(String.format("%s has left the game", handler.getPlayer().getScoreboardName())))));
+        })));
 
         logger.info("Loading mod...");
         logger.info("Registering commands...");

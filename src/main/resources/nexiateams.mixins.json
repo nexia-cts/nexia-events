@@ -4,6 +4,7 @@
   "package": "com.nexia.teams.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "EnderPearlMixin",
     "MinecraftServerMixin"
   ],
   "injectors": {
