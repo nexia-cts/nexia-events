@@ -25,7 +25,7 @@ public class KothGame {
     public AABB area;
     public BlockPos initialCoordinates;
 
-    public int timeLeft = 60; // measured in seconds default is one minute
+    public int timeLeft = 300; // measured in seconds default is five minutes
     private boolean isRunning;
     private ServerLevel level;
 
@@ -43,6 +43,8 @@ public class KothGame {
 
 
     public void start() {
+        playerScores.clear();
+        this.setWinner(null);
         if(this.isRunning) return;
 
         // TODO probably add checks to see that the position isn't null lol
