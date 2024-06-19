@@ -4,11 +4,15 @@ import com.nexia.teams.utilities.chat.ChatFormat;
 import com.nexia.teams.utilities.time.ServerTime;
 import net.kyori.adventure.text.Component;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class KothGame {
@@ -18,55 +22,79 @@ public class KothGame {
     public final String name; // name for the koth
     public final LocalDateTime scheduledTimestamp;
 
-    public final AABB area;
-    public final BlockPos initialCoordinates;
+    public AABB area;
+    public BlockPos initialCoordinates;
 
-    public int timeLeft; // measured in seconds
+    public int timeLeft = 60; // measured in seconds default is one minute
     private boolean isRunning;
+    private ServerLevel level;
 
-    private UUID winner;
-    // TODO add a hash map with all player scores
+    private ServerPlayer winner;
+    private HashMap<ServerPlayer, Integer> playerScores = new HashMap<ServerPlayer, Integer>();
 
-    public KothGame(@NotNull ServerPlayer creator, String name, LocalDateTime scheduledTimestamp, AABB area, BlockPos initialCoordinates) {
+    public KothGame(@NotNull ServerPlayer creator, String name, LocalDateTime scheduledTimestamp, AABB area, BlockPos initialCoordinates, ServerLevel level) {
         this.creator = creator.getUUID();
         this.name = name;
         this.scheduledTimestamp = scheduledTimestamp;
         this.area = area;
         this.initialCoordinates = initialCoordinates;
+        this.level = level;
     }
 
 
-    private KothGame start() {
-        if(this.isRunning) return this;
+    public void start() {
+        if(this.isRunning) return;
 
-        ServerPlayer creator = this.getCreator();
-        if(creator != null) {
-            creator.sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text(String.format("The KOTH game named '%s' has started!", this.name)))));
+        // TODO probably add checks to see that the position isn't null lol
+        for (ServerPlayer serverPlayer : ServerTime.minecraftServer.getPlayerList().getPlayers()) {
+            serverPlayer.sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text(String.format("KOTH has started at (%s, %s, %s)!", this.initialCoordinates.getX(), this.initialCoordinates.getY(), this.initialCoordinates.getZ())))));
         }
 
         this.isRunning = true;
-        return this;
     }
 
 
-    public void endGame() {
+    public void end() {
+        for (ServerPlayer serverPlayer : ServerTime.minecraftServer.getPlayerList().getPlayers()) {
+            Integer max = Collections.max(playerScores.values());
+
+            for (Map.Entry<ServerPlayer, Integer> entry : playerScores.entrySet()) {
+                if (entry.getValue() == max) {
+                    this.setWinner(entry.getKey());
+                }
+            }
+
+            serverPlayer.sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text(String.format("KOTH winner is %s!", this.getWinner().getScoreboardName())))));
+        }
+
         this.isRunning = false;
     }
 
 
     public void kothSecond() {
         if(!this.isRunning) return;
+        if (this.timeLeft <= 0) this.end();
+
+        for (ServerPlayer serverPlayer : ServerTime.minecraftServer.getPlayerList().getPlayers()) {
+            if (this.area.contains(serverPlayer.getPosition(0.0F)) && this.level == serverPlayer.serverLevel()) {
+                if (playerScores.containsKey(serverPlayer)) {
+                    playerScores.put(serverPlayer, playerScores.get(serverPlayer) + 1);
+                } else {
+                    playerScores.put(serverPlayer, 1);
+                }
+            }
+        }
 
         // TODO: add checks and shit to announce and ykyk
         this.timeLeft--;
     }
 
     public ServerPlayer getWinner() {
-        return ServerTime.minecraftServer.getPlayerList().getPlayer(this.winner);
+        return this.winner;
     }
 
     public void setWinner(ServerPlayer winner) {
-        this.winner = winner.getUUID();
+        this.winner = winner;
     }
 
     public ServerPlayer getCreator() {

@@ -1,5 +1,7 @@
 package com.nexia.teams.koth;
 
+import net.minecraft.server.level.ServerPlayer;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,9 +18,19 @@ public class KothGameHandler {
           return null;
      }
 
+     public static KothGame getKothGameByCreator(ServerPlayer serverPlayer) {
+          for (KothGame kothGame : kothGames) {
+               if (kothGame.getCreator().equals(serverPlayer)) {
+                    return kothGame;
+               }
+          }
+
+          return null;
+     }
+
      public static void stopAllKothGames() {
           for (KothGame kothGame : kothGames) {
-               kothGame.endGame();
+               kothGame.end();
           }
      }
 

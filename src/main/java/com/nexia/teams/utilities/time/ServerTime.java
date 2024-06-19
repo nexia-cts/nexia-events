@@ -21,6 +21,8 @@ public class ServerTime {
     }
 
     public static void stopServer(MinecraftServer server) {
+        KothGameHandler.stopAllKothGames();
+
         try {
             for (ServerPlayer player : server.getPlayerList().getPlayers()) {
                 player.connection.disconnect(ChatFormat.convertComponent(MiniMessage.miniMessage().deserialize(String.format("<color:%s>Server is restarting!</color>", ChatFormat.Minecraft.red.asHexString()))));
@@ -41,5 +43,6 @@ public class ServerTime {
     static void everySecond() {
         totalSecondCount++;
         KothGameHandler.kothGamesSecond();
+
     }
 }

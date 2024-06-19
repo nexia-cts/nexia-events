@@ -4,7 +4,9 @@
   "package": "com.nexia.teams.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "EnderPearlMixin"
+    "AxeItemMixin",
+    "EnderPearlMixin",
+    "ServerGamePacketListenerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
