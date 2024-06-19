@@ -27,7 +27,6 @@ public class AxeItemMixin {
         String kothEditorAxeName = player.getItemInHand(useOnContext.getHand()).getDisplayName().getString();
 
         player.sendSystemMessage(ChatFormat.convertComponent(Component.text("grr!!")));
-        System.out.println(kothEditorAxeName);
 
         if (player.getTags().contains("koth_editor")) {
             KothGame kothGame = KothGameHandler.getKothGameByName(kothEditorAxeName.substring(1, kothEditorAxeName.length() - 1));
