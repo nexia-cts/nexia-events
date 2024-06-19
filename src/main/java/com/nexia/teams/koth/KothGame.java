@@ -43,8 +43,6 @@ public class KothGame {
 
 
     public void start() {
-        playerScores.clear();
-        this.setWinner(null);
         if(this.isRunning) return;
 
         // TODO probably add checks to see that the position isn't null lol
@@ -70,6 +68,9 @@ public class KothGame {
         }
 
         this.isRunning = false;
+        playerScores.clear();
+        this.setWinner(null);
+        this.initialCoordinates = null;
     }
 
 
