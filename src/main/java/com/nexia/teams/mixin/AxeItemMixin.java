@@ -24,12 +24,16 @@ public class AxeItemMixin {
         Level level = useOnContext.getLevel();
         BlockPos blockPos = useOnContext.getClickedPos();
         Player player = useOnContext.getPlayer();
-        String kothEditorAxeName = player.getItemInHand(useOnContext.getHand()).getDisplayName().getString();
 
-        player.sendSystemMessage(ChatFormat.convertComponent(Component.text("grr!!")));
+        String kothName = null;
+        for (String tag : player.getTags()) {
+            if (tag.startsWith("koth_")) {
+                kothName = tag.substring(5);
+            }
+        }
 
-        if (player.getTags().contains("koth_editor")) {
-            KothGame kothGame = KothGameHandler.getKothGameByName(kothEditorAxeName.substring(1, kothEditorAxeName.length() - 1));
+        if (kothName != null) {
+            KothGame kothGame = KothGameHandler.getKothGameByName(kothName);
             assert kothGame != null;
             if (kothGame.initialCoordinates == null) {
                 kothGame.initialCoordinates = useOnContext.getClickedPos();
@@ -44,7 +48,7 @@ public class AxeItemMixin {
 
                 player.sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("Finished editing koth."))));
 
-                player.removeTag("koth_editor");
+                player.removeTag(kothName);
             }
         }
     }

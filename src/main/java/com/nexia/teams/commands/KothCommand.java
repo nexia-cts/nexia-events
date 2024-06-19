@@ -87,10 +87,10 @@ public class KothCommand {
         ItemStack kothEditorItem = new ItemStack(Items.DIAMOND_AXE);
         kothEditorItem.applyComponents(DataComponentMap.builder().set(
                 DataComponents.CUSTOM_NAME,
-                net.minecraft.network.chat.Component.literal(kothGame.name)
+                net.minecraft.network.chat.Component.literal("Koth editor")
         ).build());
         context.getSource().getPlayer().addItem(kothEditorItem);
-        context.getSource().getPlayer().addTag("koth_editor");
+        context.getSource().getPlayer().addTag("koth_" + name);
         context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("You are now editing the KOTH area."))));
 
 
