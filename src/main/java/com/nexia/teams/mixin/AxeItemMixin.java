@@ -48,6 +48,7 @@ public class AxeItemMixin {
 
                 player.sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("Finished editing koth."))));
 
+                kothGame.initialCoordinates = null;
                 player.removeTag("koth_" + kothName);
             }
         }

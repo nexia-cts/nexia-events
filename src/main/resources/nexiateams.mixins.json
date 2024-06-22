@@ -6,6 +6,7 @@
   "mixins": [
     "AxeItemMixin",
     "EnderPearlMixin",
+    "MaceItemMixin",
     "ServerGamePacketListenerMixin"
   ],
   "injectors": {
