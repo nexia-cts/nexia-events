@@ -6,8 +6,8 @@
   "mixins": [
     "AxeItemMixin",
     "EnderPearlMixin",
-    "MaceItemMixin",
-    "ServerGamePacketListenerMixin"
+    "ServerGamePacketListenerMixin",
+    "mace.MaceItemMixin"
   ],
   "injectors": {
     "defaultRequire": 1

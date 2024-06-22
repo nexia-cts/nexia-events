@@ -26,11 +26,11 @@ public class KothGame {
     public BlockPos initialCoordinates;
 
     public int timeLeft = 300; // measured in seconds default is five minutes
-    private boolean isRunning;
+    public boolean isRunning;
     private ServerLevel level;
 
     private ServerPlayer winner;
-    private HashMap<ServerPlayer, Integer> playerScores = new HashMap<ServerPlayer, Integer>();
+    private final HashMap<ServerPlayer, Integer> playerScores = new HashMap<>();
 
     public KothGame(@NotNull ServerPlayer creator, String name, LocalDateTime scheduledTimestamp, AABB area, BlockPos initialCoordinates, ServerLevel level) {
         this.creator = creator.getUUID();
@@ -47,7 +47,7 @@ public class KothGame {
 
         // TODO probably add checks to see that the position isn't null lol
         for (ServerPlayer serverPlayer : ServerTime.minecraftServer.getPlayerList().getPlayers()) {
-            serverPlayer.sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text(String.format("KOTH has started at (%s, %s, %s)!", this.initialCoordinates.getX(), this.initialCoordinates.getY(), this.initialCoordinates.getZ())))));
+            serverPlayer.sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text(String.format("KOTH has started at (%s, %s, %s)!", this.area.getCenter().x, this.area.getCenter().y, this.area.getCenter().z)))));
         }
 
         this.isRunning = true;

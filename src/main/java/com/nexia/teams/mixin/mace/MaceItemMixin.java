@@ -1,4 +1,4 @@
-package com.nexia.teams.mixin;
+package com.nexia.teams.mixin.mace;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;

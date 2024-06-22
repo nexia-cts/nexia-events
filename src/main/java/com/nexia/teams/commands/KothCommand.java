@@ -22,6 +22,7 @@ public class KothCommand {
 
     static String[] commands = {
             "koth" + commandSeparator + "Display this message",
+            "koth list" + commandSeparator + "Show all koths.",
             "koth create <koth>" + commandSeparator + "Create a KOTH",
             "koth pos <koth name>" + commandSeparator + "Set the positions of the KOTH",
             "koth time <koth name> <amount of time>" + commandSeparator + "Set the time for how long a KOTH lasts (in seconds)",
@@ -34,6 +35,8 @@ public class KothCommand {
         dispatcher.register(Commands.literal("koth")
                 .requires(commandSourceStack -> commandSourceStack.hasPermission(4))
                 .executes(KothCommand::info)
+                .then(Commands.literal("list")
+                        .executes(context -> listKothGames(context)))
                 .then(Commands.literal("create")
                         .then(Commands.argument("name", StringArgumentType.greedyString()).executes(context -> createKoth(context, StringArgumentType.getString(context, "name")))))
                 .then(Commands.literal("pos")
@@ -43,6 +46,27 @@ public class KothCommand {
                 .then(Commands.literal("stop")
                         .then(Commands.argument("name", StringArgumentType.greedyString()).executes(context -> stopKoth(context, StringArgumentType.getString(context, "name")))))
         );
+    }
+
+    public static int listKothGames(CommandContext<CommandSourceStack> context) {
+        if (KothGameHandler.kothGames.isEmpty()) {
+            context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("There are no KOTH games!"))));
+            return 0;
+        }
+
+        Component message = Component.text("List of KOTHs:").color(ChatFormat.Minecraft.white);
+
+        for (KothGame kothGame : KothGameHandler.kothGames) {
+            message = message.append(Component.text("\n" + kothGame.name).color(ChatFormat.Minecraft.white)
+                    .append(Component.text(" | ").color(ChatFormat.Minecraft.dark_gray))
+                    .append(Component.text(kothGame.getCreator().getScoreboardName())).color(ChatFormat.Minecraft.white)
+                    .append(Component.text(" | ").color(ChatFormat.Minecraft.dark_gray))
+                    .append(Component.text(String.format("(%s, %s, %s)", kothGame.area.getCenter().x, kothGame.area.getCenter().y, kothGame.area.getCenter().z))).color(ChatFormat.Minecraft.white)
+            );
+        }
+
+        context.getSource().sendSystemMessage(ChatFormat.convertComponent(message));
+        return 0;
     }
 
     public static int info(CommandContext<CommandSourceStack> context) {
