@@ -43,8 +43,8 @@ public class MaceItemMixin extends Item {
                 ServerLevel serverLevel = (ServerLevel)var10;
                 int x = EnchantmentHelper.getEnchantmentLevel(Enchantments.DENSITY, player);
                 float z = DensityEnchantment.calculateDamageAddition(x, player.fallDistance);
-                z = z / 2.8;
-                j = j / 1.4;
+                z = (float) (z / 2.8);
+                j = (float) (j / 1.4);
                 cir.setReturnValue(j + z);
             } else {
                 cir.setReturnValue(j);
