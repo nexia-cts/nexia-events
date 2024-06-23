@@ -155,6 +155,7 @@ public class KothCommand {
         }
 
         kothGame.time = amountOfTime;
+        kothGame.timeLeft = amountOfTime;
         context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("Changed the amount of time the KOTH lasts."))));
         return 0;
     }
@@ -187,6 +188,11 @@ public class KothCommand {
 
         if (kothGame.area == null) {
             context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("KOTH position hasn't been set!"))));
+            return 1;
+        }
+
+        if (kothGame.isRunning) {
+            context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("That KOTH is running!"))));
             return 1;
         }
 
