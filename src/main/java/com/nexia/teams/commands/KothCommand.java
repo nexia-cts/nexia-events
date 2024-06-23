@@ -44,6 +44,8 @@ public class KothCommand {
                         .then(Commands.argument("name", StringArgumentType.word()).executes(context -> startKoth(context, StringArgumentType.getString(context, "name")))))
                 .then(Commands.literal("stop")
                         .then(Commands.argument("name", StringArgumentType.word()).executes(context -> stopKoth(context, StringArgumentType.getString(context, "name")))))
+                .then(Commands.literal("delete")
+                        .then(Commands.argument("name", StringArgumentType.word()).executes(context -> deleteKoth(context, StringArgumentType.getString(context, "name")))))
                 .then(Commands.literal("time")
                         .then(Commands.argument("name", StringArgumentType.word())
                                 .then(Commands.argument("time", IntegerArgumentType.integer())
@@ -152,7 +154,7 @@ public class KothCommand {
             return 1;
         }
 
-        kothGame.timeLeft = amountOfTime;
+        kothGame.time = amountOfTime;
         context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("Changed the amount of time the KOTH lasts."))));
         return 0;
     }
@@ -201,6 +203,24 @@ public class KothCommand {
         }
 
         kothGame.end();
+        return 0;
+    }
+
+
+    public static int deleteKoth(CommandContext<CommandSourceStack> context, String name) {
+        KothGame kothGame = KothGameHandler.getKothGameByName(name);
+
+        if (kothGame == null) {
+            context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("That KOTH doesn't exist!"))));
+            return 1;
+        }
+
+        if (kothGame.isRunning) {
+            context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("That KOTH is running!"))));
+            return 1;
+        }
+
+        KothGameHandler.kothGames.remove(kothGame);
         return 0;
     }
 }

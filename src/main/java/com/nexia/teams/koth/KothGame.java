@@ -24,6 +24,7 @@ public class KothGame {
     public AABB area;
     public BlockPos initialCoordinates;
 
+    public int time = 300;
     public int timeLeft = 300; // measured in seconds default is five minutes
     public boolean isRunning;
     private ServerLevel level;
@@ -69,6 +70,7 @@ public class KothGame {
         this.isRunning = false;
         playerScores.clear();
         this.setWinner(null);
+        this.timeLeft = time;
         this.initialCoordinates = null;
     }
 
