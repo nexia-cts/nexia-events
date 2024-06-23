@@ -1,19 +1,18 @@
 package com.nexia.teams.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.nexia.teams.koth.KothGame;
 import com.nexia.teams.koth.KothGameHandler;
 import com.nexia.teams.utilities.chat.ChatFormat;
-import com.nexia.teams.utilities.time.ServerTime;
 import net.kyori.adventure.text.Component;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
@@ -36,15 +35,19 @@ public class KothCommand {
                 .requires(commandSourceStack -> commandSourceStack.hasPermission(4))
                 .executes(KothCommand::info)
                 .then(Commands.literal("list")
-                        .executes(context -> listKothGames(context)))
+                        .executes(KothCommand::listKothGames))
                 .then(Commands.literal("create")
-                        .then(Commands.argument("name", StringArgumentType.greedyString()).executes(context -> createKoth(context, StringArgumentType.getString(context, "name")))))
+                        .then(Commands.argument("name", StringArgumentType.word()).executes(context -> createKoth(context, StringArgumentType.getString(context, "name")))))
                 .then(Commands.literal("pos")
-                        .then(Commands.argument("name", StringArgumentType.greedyString()).executes(context -> setKothPos(context, StringArgumentType.getString(context, "name")))))
+                        .then(Commands.argument("name", StringArgumentType.word()).executes(context -> setKothPos(context, StringArgumentType.getString(context, "name")))))
                 .then(Commands.literal("start")
-                        .then(Commands.argument("name", StringArgumentType.greedyString()).executes(context -> startKoth(context, StringArgumentType.getString(context, "name")))))
+                        .then(Commands.argument("name", StringArgumentType.word()).executes(context -> startKoth(context, StringArgumentType.getString(context, "name")))))
                 .then(Commands.literal("stop")
-                        .then(Commands.argument("name", StringArgumentType.greedyString()).executes(context -> stopKoth(context, StringArgumentType.getString(context, "name")))))
+                        .then(Commands.argument("name", StringArgumentType.word()).executes(context -> stopKoth(context, StringArgumentType.getString(context, "name")))))
+                .then(Commands.literal("time")
+                        .then(Commands.argument("name", StringArgumentType.word())
+                                .then(Commands.argument("time", IntegerArgumentType.integer())
+                                        .executes(context -> setKothTime(context, StringArgumentType.getString(context, "name"), IntegerArgumentType.getInteger(context, "time"))))))
         );
     }
 
@@ -57,12 +60,20 @@ public class KothCommand {
         Component message = Component.text("List of KOTHs:").color(ChatFormat.Minecraft.white);
 
         for (KothGame kothGame : KothGameHandler.kothGames) {
-            message = message.append(Component.text("\n" + kothGame.name).color(ChatFormat.Minecraft.white)
-                    .append(Component.text(" | ").color(ChatFormat.Minecraft.dark_gray))
-                    .append(Component.text(kothGame.getCreator().getScoreboardName())).color(ChatFormat.Minecraft.white)
-                    .append(Component.text(" | ").color(ChatFormat.Minecraft.dark_gray))
-                    .append(Component.text(String.format("(%s, %s, %s)", kothGame.area.getCenter().x, kothGame.area.getCenter().y, kothGame.area.getCenter().z))).color(ChatFormat.Minecraft.white)
-            );
+            if (kothGame.area != null) {
+                message = message.append(Component.text("\n" + kothGame.name).color(ChatFormat.Minecraft.white)
+                        .append(Component.text(" | ").color(ChatFormat.Minecraft.dark_gray))
+                        .append(Component.text(kothGame.getCreator().getScoreboardName())).color(ChatFormat.Minecraft.white)
+                        .append(Component.text(" | ").color(ChatFormat.Minecraft.dark_gray))
+                        .append(Component.text(String.format("(%s, %s, %s)", kothGame.area.getCenter().x, kothGame.area.getCenter().y, kothGame.area.getCenter().z))).color(ChatFormat.Minecraft.white)
+                );
+            } else {
+                message = message.append(Component.text("\n" + kothGame.name).color(ChatFormat.Minecraft.white)
+                        .append(Component.text(" | ").color(ChatFormat.Minecraft.dark_gray))
+                        .append(Component.text(kothGame.getCreator().getScoreboardName())).color(ChatFormat.Minecraft.white)
+                );
+            }
+
         }
 
         context.getSource().sendSystemMessage(ChatFormat.convertComponent(message));
@@ -80,8 +91,6 @@ public class KothCommand {
                     .color(ChatFormat.brandColor1)
                     .append(Component.text(" | ").color(ChatFormat.Minecraft.aqua))
                     .append(Component.text(commandInfo[1]).color(ChatFormat.brandColor2)));
-
-            //message += "\n" + ChatFormat.brandColor1 + "/" + commandInfo[0] + ChatFormat.lineColor + " | " + ChatFormat.brandColor2 + commandInfo[1];
         }
 
         context.getSource().sendSystemMessage(ChatFormat.convertComponent(message));
@@ -121,7 +130,26 @@ public class KothCommand {
         return 0;
     }
 
-    public static int setKothTime(CommandContext<CommandSourceStack> context, String name, String amountOfTime) {
+    public static int setKothTime(CommandContext<CommandSourceStack> context, String name, int amountOfTime) {
+        KothGame kothGame = KothGameHandler.getKothGameByName(name);
+
+        if (kothGame == null) {
+            context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("That KOTH doesn't exist!"))));
+            return 1;
+        }
+
+        if (kothGame.isRunning) {
+            context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("That KOTH is running!"))));
+            return 1;
+        }
+
+        if (amountOfTime <= 0) {
+            context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("Invalid amount of time!"))));
+            return 1;
+        }
+
+        kothGame.timeLeft = amountOfTime;
+        context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("Changed the amount of time the KOTH lasts."))));
         return 0;
     }
 
@@ -134,6 +162,11 @@ public class KothCommand {
 
         if (kothGame == null) {
             context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("That KOTH doesn't exist!"))));
+            return 1;
+        }
+
+        if (kothGame.area == null) {
+            context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("KOTH position hasn't been set!"))));
             return 1;
         }
 
