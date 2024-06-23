@@ -68,9 +68,6 @@ public class KothGame {
         }
 
         this.isRunning = false;
-
-        winner.additem
-
         playerScores.clear();
         this.setWinner(null);
         this.timeLeft = time;
