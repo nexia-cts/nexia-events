@@ -9,14 +9,11 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 public class KothGame {
 
-    private final UUID creator;
+    public final String creator;
 
     public final String name; // name for the koth
     public Long scheduledTimestamp;
@@ -24,16 +21,15 @@ public class KothGame {
     public AABB area;
     public BlockPos initialCoordinates;
 
-    public int time = 300;
-    public int timeLeft = 300; // measured in seconds default is five minutes
+    public int time = 300; // measured in seconds
     public boolean isRunning;
     private ServerLevel level;
 
     private ServerPlayer winner;
     private final HashMap<ServerPlayer, Integer> playerScores = new HashMap<>();
 
-    public KothGame(@NotNull ServerPlayer creator, String name, Long scheduledTimestamp, AABB area, BlockPos initialCoordinates, ServerLevel level) {
-        this.creator = creator.getUUID();
+    public KothGame(@NotNull String creator, String name, Long scheduledTimestamp, AABB area, BlockPos initialCoordinates, ServerLevel level) {
+        this.creator = creator;
         this.name = name;
         this.scheduledTimestamp = scheduledTimestamp;
         this.area = area;
@@ -54,43 +50,38 @@ public class KothGame {
     }
 
 
-    public void end() {
-        for (ServerPlayer serverPlayer : ServerTime.minecraftServer.getPlayerList().getPlayers()) {
-            Integer max = Collections.max(playerScores.values());
+    public void end(ServerPlayer winner) {
+        this.setWinner(winner);
 
-            for (Map.Entry<ServerPlayer, Integer> entry : playerScores.entrySet()) {
-                if (entry.getValue() == max) {
-                    this.setWinner(entry.getKey());
-                }
+        if (winner != null) {
+            for (ServerPlayer serverPlayer : ServerTime.minecraftServer.getPlayerList().getPlayers()) {
+                serverPlayer.sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text(String.format("KOTH winner is %s!", this.getWinner().getScoreboardName())))));
             }
-
-            serverPlayer.sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text(String.format("KOTH winner is %s!", this.getWinner().getScoreboardName())))));
         }
 
         this.isRunning = false;
         playerScores.clear();
         this.setWinner(null);
-        this.timeLeft = time;
         this.initialCoordinates = null;
     }
 
 
     public void kothSecond() {
         if(!this.isRunning) return;
-        if (this.timeLeft <= 0) this.end();
 
         for (ServerPlayer serverPlayer : ServerTime.minecraftServer.getPlayerList().getPlayers()) {
             if (this.area.contains(serverPlayer.getPosition(0.0F)) && this.level == serverPlayer.serverLevel()) {
                 if (playerScores.containsKey(serverPlayer)) {
                     playerScores.put(serverPlayer, playerScores.get(serverPlayer) + 1);
+
+                    if (playerScores.get(serverPlayer) == time) {
+                        this.end(serverPlayer);
+                    }
                 } else {
                     playerScores.put(serverPlayer, 1);
                 }
             }
         }
-
-        // TODO: add checks and shit to announce and ykyk
-        this.timeLeft--;
     }
 
     public ServerPlayer getWinner() {
@@ -102,6 +93,6 @@ public class KothGame {
     }
 
     public ServerPlayer getCreator() {
-        return ServerTime.minecraftServer.getPlayerList().getPlayer(this.creator);
+        return ServerTime.minecraftServer.getPlayerList().getPlayerByName(this.creator);
     }
 }

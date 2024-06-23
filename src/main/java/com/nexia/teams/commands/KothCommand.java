@@ -24,7 +24,7 @@ public class KothCommand {
             "koth list" + commandSeparator + "Show all koths.",
             "koth create <koth>" + commandSeparator + "Create a KOTH",
             "koth pos <koth name>" + commandSeparator + "Set the positions of the KOTH",
-            "koth time <koth name> <amount of time>" + commandSeparator + "Set the time for how long a KOTH lasts (in seconds)",
+            "koth time <koth name> <amount of time>" + commandSeparator + "Set the time for how much a player needs to win (in seconds)",
             "koth schedule <koth name> <timestamp>" + commandSeparator + "When the KOTH will automatically start.",
             "koth start <koth name>" + commandSeparator + "Start the KOTH.",
             "koth stop <koth name>" + commandSeparator + "Stop the KOTH."
@@ -110,7 +110,7 @@ public class KothCommand {
             return 1;
         }
 
-        KothGameHandler.kothGames.add(new KothGame(context.getSource().getPlayer(), name, null, null, null, context.getSource().getLevel()));
+        KothGameHandler.kothGames.add(new KothGame(context.getSource().getPlayer().getScoreboardName(), name, null, null, null, context.getSource().getLevel()));
         context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("KOTH " + name + " has been created!"))));
         return 0;
     }
@@ -155,8 +155,7 @@ public class KothCommand {
         }
 
         kothGame.time = amountOfTime;
-        kothGame.timeLeft = amountOfTime;
-        context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("Changed the amount of time the KOTH lasts."))));
+        context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("Changed the amount of time a player needs to win."))));
         return 0;
     }
 
@@ -208,7 +207,7 @@ public class KothCommand {
             return 1;
         }
 
-        kothGame.end();
+        kothGame.end(null);
         return 0;
     }
 

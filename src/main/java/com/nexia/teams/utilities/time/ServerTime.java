@@ -4,6 +4,7 @@ import com.google.common.base.Suppliers;
 import com.nexia.teams.koth.KothGame;
 import com.nexia.teams.koth.KothGameHandler;
 import com.nexia.teams.utilities.chat.ChatFormat;
+import com.nexia.teams.utilities.data.KothDataManager;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -19,10 +20,12 @@ public class ServerTime {
     public static void firstTick(MinecraftServer server) {
         ServerTime.minecraftServer = server;
         ChatFormat.provider = Suppliers.ofInstance(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY)).get();
+        KothDataManager.loadKothGamesData();
     }
 
     public static void stopServer(MinecraftServer server) {
         KothGameHandler.stopAllKothGames();
+        KothDataManager.saveKothGamesData();
 
         try {
             for (ServerPlayer player : server.getPlayerList().getPlayers()) {
