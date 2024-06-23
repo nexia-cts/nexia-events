@@ -9,7 +9,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +19,7 @@ public class KothGame {
     private final UUID creator;
 
     public final String name; // name for the koth
-    public final LocalDateTime scheduledTimestamp;
+    public Long scheduledTimestamp;
 
     public AABB area;
     public BlockPos initialCoordinates;
@@ -32,7 +31,7 @@ public class KothGame {
     private ServerPlayer winner;
     private final HashMap<ServerPlayer, Integer> playerScores = new HashMap<>();
 
-    public KothGame(@NotNull ServerPlayer creator, String name, LocalDateTime scheduledTimestamp, AABB area, BlockPos initialCoordinates, ServerLevel level) {
+    public KothGame(@NotNull ServerPlayer creator, String name, Long scheduledTimestamp, AABB area, BlockPos initialCoordinates, ServerLevel level) {
         this.creator = creator.getUUID();
         this.name = name;
         this.scheduledTimestamp = scheduledTimestamp;

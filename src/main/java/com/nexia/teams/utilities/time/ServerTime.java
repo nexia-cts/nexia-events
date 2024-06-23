@@ -1,6 +1,7 @@
 package com.nexia.teams.utilities.time;
 
 import com.google.common.base.Suppliers;
+import com.nexia.teams.koth.KothGame;
 import com.nexia.teams.koth.KothGameHandler;
 import com.nexia.teams.utilities.chat.ChatFormat;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -42,6 +43,15 @@ public class ServerTime {
 
     static void everySecond() {
         totalSecondCount++;
+
+        long unixTime = System.currentTimeMillis() / 1000L;
+        for (KothGame kothGame : KothGameHandler.kothGames) {
+            if (kothGame.scheduledTimestamp == null) continue;
+            if (kothGame.scheduledTimestamp == unixTime) {
+                kothGame.start();
+            }
+        }
+
         KothGameHandler.kothGamesSecond();
 
     }

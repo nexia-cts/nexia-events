@@ -48,6 +48,10 @@ public class KothCommand {
                         .then(Commands.argument("name", StringArgumentType.word())
                                 .then(Commands.argument("time", IntegerArgumentType.integer())
                                         .executes(context -> setKothTime(context, StringArgumentType.getString(context, "name"), IntegerArgumentType.getInteger(context, "time"))))))
+                .then(Commands.literal("schedule")
+                        .then(Commands.argument("name", StringArgumentType.word())
+                                .then(Commands.argument("epoch", IntegerArgumentType.integer())
+                                        .executes(context -> scheduleKoth(context, StringArgumentType.getString(context, "name"), IntegerArgumentType.getInteger(context, "epoch"))))))
         );
     }
 
@@ -153,7 +157,21 @@ public class KothCommand {
         return 0;
     }
 
-    public static int scheduleKoth(CommandContext<CommandSourceStack> context, String name, String timestamp) {
+    public static int scheduleKoth(CommandContext<CommandSourceStack> context, String name, long epoch) {
+        KothGame kothGame = KothGameHandler.getKothGameByName(name);
+
+        if (kothGame == null) {
+            context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("That KOTH doesn't exist!"))));
+            return 1;
+        }
+
+        if (kothGame.isRunning) {
+            context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("That KOTH is running!"))));
+            return 1;
+        }
+
+        kothGame.scheduledTimestamp = epoch;
+        context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("Scheduled KOTH."))));
         return 0;
     }
 
