@@ -8,5 +8,6 @@ public class CommandLoader {
         Event<CommandRegistrationCallback> callbackEvent = CommandRegistrationCallback.EVENT;
 
         callbackEvent.register(KothCommand::register);
+        callbackEvent.register(TeamCommand::register);
     }
 }

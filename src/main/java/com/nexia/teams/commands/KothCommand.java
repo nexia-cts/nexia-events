@@ -57,7 +57,7 @@ public class KothCommand {
         );
     }
 
-    public static int listKothGames(CommandContext<CommandSourceStack> context) {
+    private static int listKothGames(CommandContext<CommandSourceStack> context) {
         if (KothGameHandler.kothGames.isEmpty()) {
             context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("There are no KOTH games!"))));
             return 0;
@@ -86,7 +86,7 @@ public class KothCommand {
         return 0;
     }
 
-    public static int info(CommandContext<CommandSourceStack> context) {
+    private static int info(CommandContext<CommandSourceStack> context) {
         Component message = Component.text("");
 
         for (String command : commands) {
@@ -104,7 +104,7 @@ public class KothCommand {
         return 0;
     }
 
-    public static int createKoth(CommandContext<CommandSourceStack> context, String name) {
+    private static int createKoth(CommandContext<CommandSourceStack> context, String name) {
         if (KothGameHandler.getKothGameByName(name) != null) {
             context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("That KOTH name is taken!"))));
             return 1;
@@ -115,7 +115,7 @@ public class KothCommand {
         return 0;
     }
 
-    public static int setKothPos(CommandContext<CommandSourceStack> context, String name) {
+    private static int setKothPos(CommandContext<CommandSourceStack> context, String name) {
         KothGame kothGame = KothGameHandler.getKothGameByName(name);
 
         if (kothGame == null) {
@@ -136,7 +136,7 @@ public class KothCommand {
         return 0;
     }
 
-    public static int setKothTime(CommandContext<CommandSourceStack> context, String name, int amountOfTime) {
+    private static int setKothTime(CommandContext<CommandSourceStack> context, String name, int amountOfTime) {
         KothGame kothGame = KothGameHandler.getKothGameByName(name);
 
         if (kothGame == null) {
@@ -159,7 +159,7 @@ public class KothCommand {
         return 0;
     }
 
-    public static int scheduleKoth(CommandContext<CommandSourceStack> context, String name, long epoch) {
+    private static int scheduleKoth(CommandContext<CommandSourceStack> context, String name, long epoch) {
         KothGame kothGame = KothGameHandler.getKothGameByName(name);
 
         if (kothGame == null) {
@@ -177,7 +177,7 @@ public class KothCommand {
         return 0;
     }
 
-    public static int startKoth(CommandContext<CommandSourceStack> context, String name) {
+    private static int startKoth(CommandContext<CommandSourceStack> context, String name) {
         KothGame kothGame = KothGameHandler.getKothGameByName(name);
 
         if (kothGame == null) {
@@ -199,7 +199,7 @@ public class KothCommand {
         return 0;
     }
 
-    public static int stopKoth(CommandContext<CommandSourceStack> context, String name) {
+    private static int stopKoth(CommandContext<CommandSourceStack> context, String name) {
         KothGame kothGame = KothGameHandler.getKothGameByName(name);
 
         if (kothGame == null) {
@@ -212,7 +212,7 @@ public class KothCommand {
     }
 
 
-    public static int deleteKoth(CommandContext<CommandSourceStack> context, String name) {
+    private static int deleteKoth(CommandContext<CommandSourceStack> context, String name) {
         KothGame kothGame = KothGameHandler.getKothGameByName(name);
 
         if (kothGame == null) {

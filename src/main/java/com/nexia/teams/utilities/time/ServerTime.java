@@ -5,6 +5,7 @@ import com.nexia.teams.koth.KothGame;
 import com.nexia.teams.koth.KothGameHandler;
 import com.nexia.teams.utilities.chat.ChatFormat;
 import com.nexia.teams.utilities.data.KothDataManager;
+import com.nexia.teams.utilities.teams.TeamUtil;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -12,7 +13,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 
-public class ServerTime {
+public abstract class ServerTime {
     public static MinecraftServer minecraftServer = null;
 
     private static int totalTickCount = -1;
@@ -40,6 +41,7 @@ public class ServerTime {
     public static void everyTick(MinecraftServer server) {
         totalTickCount++;
 
+        TeamUtil.tick();
         if (totalTickCount % 20 == 0) {
             everySecond();
         }

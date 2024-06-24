@@ -12,7 +12,7 @@ import net.minecraft.network.chat.Component;
  * https://github.com/nexia-cts/Nexia-Mod/blob/main/src/main/java/com/nexia/core/utilities/chat/ChatFormat.java
  */
 
-public class ChatFormat {
+public abstract class ChatFormat {
 
     public static RegistryAccess.Frozen provider;
 

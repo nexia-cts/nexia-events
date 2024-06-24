@@ -6,18 +6,16 @@ import com.nexia.teams.koth.KothGameHandler;
 import com.nexia.teams.utilities.time.ServerTime;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class KothDataManager {
+public abstract class KothDataManager {
     public static String dataDirectory = FabricLoader.getInstance().getConfigDir().toString() + "/nexia/koth";
 
     public static void saveKothGamesData() {
-        // TODO add a check for when area is null
         try {
             for (KothGame kothGame : KothGameHandler.kothGames) {
                 Gson gson = new Gson();
