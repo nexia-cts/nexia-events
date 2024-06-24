@@ -6,6 +6,7 @@ import com.nexia.teams.koth.KothGameHandler;
 import com.nexia.teams.utilities.time.ServerTime;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -20,7 +21,15 @@ public class KothDataManager {
         try {
             for (KothGame kothGame : KothGameHandler.kothGames) {
                 Gson gson = new Gson();
-                SavedKothData savedKothData = new SavedKothData(kothGame.creator, kothGame.name, kothGame.scheduledTimestamp, kothGame.area.minX, kothGame.area.minY, kothGame.area.minZ, kothGame.area.maxX, kothGame.area.maxY, kothGame.area.maxZ, kothGame.time);
+                SavedKothData savedKothData = new SavedKothData(
+                        kothGame.creator,
+                        kothGame.name,
+                        kothGame.scheduledTimestamp,
+                        (kothGame.area == null) ? null : new double[]{kothGame.area.minX, kothGame.area.minY, kothGame.area.minZ},
+                        (kothGame.area == null) ? null : new double[]{kothGame.area.maxX, kothGame.area.maxY, kothGame.area.maxZ},
+                        kothGame.time,
+                        kothGame.level.toString()
+                );
                 String json = gson.toJson(savedKothData);
                 String directory = getDataDir();
                 FileWriter fileWriter = new FileWriter(directory + "/" + kothGame.name + ".json");
@@ -34,8 +43,8 @@ public class KothDataManager {
 
     public static void loadKothGamesData() {
         try {
-            // TODO store the minecraft dimension lol
             String directory = getDataDir();
+
             for (File file : new File(directory).listFiles()) {
                 String json = Files.readString(Path.of(directory + "/" + file.getName()));
                 Gson gson = new Gson();
@@ -44,9 +53,9 @@ public class KothDataManager {
                         savedKothData.creator,
                         savedKothData.name,
                         savedKothData.scheduledTimeStamp,
-                        new AABB(savedKothData.x1, savedKothData.y1, savedKothData.z1, savedKothData.x2, savedKothData.y2, savedKothData.z2),
+                        (savedKothData.firstBlockPos == null || savedKothData.lastBlockPos == null) ? null : new AABB(savedKothData.firstBlockPos[0], savedKothData.firstBlockPos[1], savedKothData.firstBlockPos[2], savedKothData.lastBlockPos[0], savedKothData.lastBlockPos[1], savedKothData.lastBlockPos[2]),
                         null,
-                        null
+                        ServerTime.getLevelByName(savedKothData.level)
                 );
                 KothGameHandler.kothGames.add(kothGame);
             }

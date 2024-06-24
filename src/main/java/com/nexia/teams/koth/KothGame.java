@@ -22,8 +22,8 @@ public class KothGame {
     public BlockPos initialCoordinates;
 
     public int time = 300; // measured in seconds
-    public boolean isRunning;
-    private ServerLevel level;
+    public boolean isRunning = false;
+    public ServerLevel level;
 
     private ServerPlayer winner;
     private final HashMap<ServerPlayer, Integer> playerScores = new HashMap<>();
@@ -41,7 +41,6 @@ public class KothGame {
     public void start() {
         if(this.isRunning) return;
 
-        // TODO probably add checks to see that the position isn't null lol
         for (ServerPlayer serverPlayer : ServerTime.minecraftServer.getPlayerList().getPlayers()) {
             serverPlayer.sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text(String.format("KOTH has started at (%s, %s, %s)!", this.area.getCenter().x, this.area.getCenter().y, this.area.getCenter().z)))));
         }

@@ -69,14 +69,14 @@ public class KothCommand {
             if (kothGame.area != null) {
                 message = message.append(Component.text("\n" + kothGame.name).color(ChatFormat.Minecraft.white)
                         .append(Component.text(" | ").color(ChatFormat.Minecraft.dark_gray))
-                        .append(Component.text(kothGame.getCreator().getScoreboardName())).color(ChatFormat.Minecraft.white)
+                        .append(Component.text(kothGame.creator)).color(ChatFormat.Minecraft.white)
                         .append(Component.text(" | ").color(ChatFormat.Minecraft.dark_gray))
                         .append(Component.text(String.format("(%s, %s, %s)", kothGame.area.getCenter().x, kothGame.area.getCenter().y, kothGame.area.getCenter().z))).color(ChatFormat.Minecraft.white)
                 );
             } else {
                 message = message.append(Component.text("\n" + kothGame.name).color(ChatFormat.Minecraft.white)
                         .append(Component.text(" | ").color(ChatFormat.Minecraft.dark_gray))
-                        .append(Component.text(kothGame.getCreator().getScoreboardName())).color(ChatFormat.Minecraft.white)
+                        .append(Component.text(kothGame.creator)).color(ChatFormat.Minecraft.white)
                 );
             }
 

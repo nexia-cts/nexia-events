@@ -9,6 +9,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 
 public class ServerTime {
@@ -56,6 +57,15 @@ public class ServerTime {
         }
 
         KothGameHandler.kothGamesSecond();
+    }
 
+    public static ServerLevel getLevelByName(String name) {
+        for (ServerLevel serverLevel : minecraftServer.getAllLevels())  {
+            if (serverLevel.toString().equals(name)) {
+                return serverLevel;
+            }
+        }
+
+        return null;
     }
 }
