@@ -227,6 +227,7 @@ public class TeamCommand {
             return 1;
         }
 
+        test
         player.getScoreboard().addPlayerToTeam(player.getScoreboardName(), player.getScoreboard().getPlayerTeam(teamName));
 
         for (String teamPlayer : player.getScoreboard().getPlayerTeam(teamName).getPlayers()) {
