@@ -99,7 +99,7 @@ public class TeamCommand {
         PlayerTeam playerTeam = ServerTime.minecraftServer.getScoreboard().addPlayerTeam(name);
         playerTeam.setSeeFriendlyInvisibles(true);
         playerTeam.setAllowFriendlyFire(false);
-        Component teamPrefix = MiniMessage.miniMessage().deserialize(String.format("<bold><gradient:%s:%s>%s</gradient></bold> <color:%s>»</color> ", "white", ChatFormat.getSecondaryColor("white"), playerTeam.getName(), ChatFormat.arrowColor));
+        Component teamPrefix = MiniMessage.miniMessage().deserialize(String.format("<gradient:%s:%s>%s</gradient> <color:%s>|</color> ", "white", "white", playerTeam.getName(), ChatFormat.arrowColor));
         playerTeam.setPlayerPrefix(ChatFormat.convertComponent(teamPrefix));
         playerTeam.setColor(ChatFormatting.getByName(ChatFormat.getSecondaryColor("white")));
         ServerTime.minecraftServer.getScoreboard().addPlayerToTeam(context.getSource().getPlayer().getScoreboardName(), playerTeam);
@@ -278,7 +278,7 @@ public class TeamCommand {
             return 1;
         }
 
-        Component teamPrefix = MiniMessage.miniMessage().deserialize(String.format("<bold><gradient:%s:%s>%s</gradient></bold> <color:%s>»</color> ", color.getName(), ChatFormat.getSecondaryColor(color.getName()), team.getName(), ChatFormat.arrowColor));
+        Component teamPrefix = MiniMessage.miniMessage().deserialize(String.format("<gradient:%s:%s>%s</gradient> <color:%s>|</color> ", color.getName(), color.getName(), team.getName(), ChatFormat.arrowColor));
         team.setPlayerPrefix(ChatFormat.convertComponent(teamPrefix));
         team.setColor(ChatFormatting.getByName(ChatFormat.getSecondaryColor(color.getName())));
         context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("Changed team prefix color!"))));
