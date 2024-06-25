@@ -81,13 +81,13 @@ public class TeamCommand {
     }
 
     private static int createTeam(CommandContext<CommandSourceStack> context, String name) {
-        if (ServerTime.minecraftServer.getScoreboard().getPlayerTeam(name) != null) {
-            context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("That team already exists!"))));
+        if (context.getSource().getPlayer().getTeam() != null) {
+            context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("You're already in a team!"))));
             return 1;
         }
 
-        if (context.getSource().getPlayer().getTeam() != null) {
-            context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("You're already in a team!"))));
+        if (ServerTime.minecraftServer.getScoreboard().getPlayerTeam(name) != null) {
+            context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("That team already exists!"))));
             return 1;
         }
 
