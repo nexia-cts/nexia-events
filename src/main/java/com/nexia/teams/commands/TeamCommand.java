@@ -55,7 +55,7 @@ public class TeamCommand {
                 .then(Commands.literal("leave")
                         .executes(TeamCommand::leaveTeam))
                 .then(Commands.literal("color")
-                        .then(Commands.argument("color", ColorArgument.color()).executes(context -> setPrefixColor(context, ColorArgument.getColor(context, "color")))))
+                        .then(Commands.argument("color", ColorArgument.color()).executes(context -> setTeamColor(context, ColorArgument.getColor(context, "color")))))
                 .then(Commands.literal("list")
                         .executes(context -> listMembers(context, context.getSource().getPlayer().getTeam()))
                         .then(Commands.argument("team", TeamArgument.team()).executes(context -> listMembers(context, TeamArgument.getTeam(context, "team")))))
@@ -99,8 +99,9 @@ public class TeamCommand {
         PlayerTeam playerTeam = ServerTime.minecraftServer.getScoreboard().addPlayerTeam(name);
         playerTeam.setSeeFriendlyInvisibles(true);
         playerTeam.setAllowFriendlyFire(false);
-        Component teamPrefix = MiniMessage.miniMessage().deserialize(String.format("<bold><gradient:%s:%s>" + playerTeam.getName() + "</gradient></bold> <color:%s>»</color> ", ChatFormat.brandColor1, ChatFormat.brandColor2, ChatFormat.arrowColor));
+        Component teamPrefix = MiniMessage.miniMessage().deserialize(String.format("<bold><gradient:%s:%s>%s</gradient></bold> <color:%s>»</color> ", "white", ChatFormat.getSecondaryColor("white"), playerTeam.getName(), ChatFormat.arrowColor));
         playerTeam.setPlayerPrefix(ChatFormat.convertComponent(teamPrefix));
+        playerTeam.setColor(ChatFormatting.getByName(ChatFormat.getSecondaryColor("white")));
         ServerTime.minecraftServer.getScoreboard().addPlayerToTeam(context.getSource().getPlayer().getScoreboardName(), playerTeam);
         context.getSource().getPlayer().addTag("leader_" + playerTeam.getName());
         context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("You have created your own team."))));
@@ -199,6 +200,11 @@ public class TeamCommand {
             return 1;
         }
 
+        if (context.getSource().getPlayer() == player) {
+            context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("You can't kick yourself!"))));
+            return 1;
+        }
+
         ServerTime.minecraftServer.getScoreboard().removePlayerFromTeam(player.getScoreboardName(), playerTeam);
         context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("Player %s has been kicked.".formatted(player.getScoreboardName())))));
 
@@ -264,7 +270,7 @@ public class TeamCommand {
     }
 
 
-    private static int setPrefixColor(CommandContext<CommandSourceStack> context, ChatFormatting color) {
+    private static int setTeamColor(CommandContext<CommandSourceStack> context, ChatFormatting color) {
         PlayerTeam team = context.getSource().getPlayer().getTeam();
 
         if (team == null) {
@@ -272,8 +278,9 @@ public class TeamCommand {
             return 1;
         }
 
-        Component teamPrefix = MiniMessage.miniMessage().deserialize(String.format("<bold><gradient:%s:%s>" + team.getName() + "</gradient></bold> <color:%s>»</color> ", ChatFormat.convertChatFormatting(color), ChatFormat.getSecondaryColor(ChatFormat.convertChatFormatting(color)), ChatFormat.arrowColor));
+        Component teamPrefix = MiniMessage.miniMessage().deserialize(String.format("<bold><gradient:%s:%s>%s</gradient></bold> <color:%s>»</color> ", color.getName(), ChatFormat.getSecondaryColor(color.getName()), team.getName(), ChatFormat.arrowColor));
         team.setPlayerPrefix(ChatFormat.convertComponent(teamPrefix));
+        team.setColor(ChatFormatting.getByName(ChatFormat.getSecondaryColor(color.getName())));
         context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("Changed team prefix color!"))));
 
         return 0;
