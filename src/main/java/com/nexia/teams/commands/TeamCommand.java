@@ -10,6 +10,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minecraft.ChatFormatting;
@@ -99,7 +100,8 @@ public class TeamCommand {
         PlayerTeam playerTeam = ServerTime.minecraftServer.getScoreboard().addPlayerTeam(name);
         playerTeam.setSeeFriendlyInvisibles(true);
         playerTeam.setAllowFriendlyFire(false);
-        Component teamPrefix = MiniMessage.miniMessage().deserialize(String.format("<gradient:%s:%s>%s</gradient> <color:%s>|</color> ", "white", "white", playerTeam.getName(), ChatFormat.arrowColor));
+        Component teamPrefix = Component.text(playerTeam.getName()).color(TextColor.color(ChatFormatting.WHITE.getColor()))
+                .append(Component.text(" | ").color(ChatFormat.arrowColor));
         playerTeam.setPlayerPrefix(ChatFormat.convertComponent(teamPrefix));
         playerTeam.setColor(ChatFormatting.getByName(ChatFormat.getSecondaryColor("white")));
         ServerTime.minecraftServer.getScoreboard().addPlayerToTeam(context.getSource().getPlayer().getScoreboardName(), playerTeam);
@@ -278,7 +280,8 @@ public class TeamCommand {
             return 1;
         }
 
-        Component teamPrefix = MiniMessage.miniMessage().deserialize(String.format("<gradient:%s:%s>%s</gradient> <color:%s>|</color> ", color.getName(), color.getName(), team.getName(), ChatFormat.arrowColor));
+        Component teamPrefix = Component.text(team.getName()).color(TextColor.color(color.getColor()))
+                .append(Component.text(" | ").color(ChatFormat.arrowColor));
         team.setPlayerPrefix(ChatFormat.convertComponent(teamPrefix));
         team.setColor(ChatFormatting.getByName(ChatFormat.getSecondaryColor(color.getName())));
         context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("Changed team prefix color!"))));
