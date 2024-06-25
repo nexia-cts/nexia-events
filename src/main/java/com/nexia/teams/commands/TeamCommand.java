@@ -229,7 +229,6 @@ public class TeamCommand {
 
         player.getScoreboard().addPlayerToTeam(player.getScoreboardName(), player.getScoreboard().getPlayerTeam(teamName));
 
-
         for (String teamPlayer : player.getScoreboard().getPlayerTeam(teamName).getPlayers()) {
             ServerPlayer serverPlayer = ServerTime.minecraftServer.getPlayerList().getPlayerByName(teamPlayer);
 
