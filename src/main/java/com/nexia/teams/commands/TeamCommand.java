@@ -29,9 +29,10 @@ public class TeamCommand {
             "t create <name>" + commandSeparator + "Create a team",
             "t leave" + commandSeparator + "Leave your current team",
             "t invite <player>" + commandSeparator + "Invite a player to a team",
-            "t accept <name>" + commandSeparator + "Accept an invite to a team",
-            "t decline <name>" + commandSeparator + "Decline an invite to a team",
-            "t color <name>" + commandSeparator + "Change the prefix color of your team",
+            "t kick <player>" + commandSeparator + "Kick a player from your team",
+            "t accept" + commandSeparator + "Accept an invite to a team",
+            "t decline" + commandSeparator + "Decline an invite to a team",
+            "t color <color>" + commandSeparator + "Change the prefix color of your team",
     };
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext commandBuildContext, Commands.CommandSelection commandSelection) {
@@ -85,10 +86,15 @@ public class TeamCommand {
             return 1;
         }
 
+        if (name.length() > 12) {
+            context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("Team name is too long!"))));
+            return 1;
+        }
+
         PlayerTeam playerTeam = ServerTime.minecraftServer.getScoreboard().addPlayerTeam(name);
         playerTeam.setSeeFriendlyInvisibles(true);
         playerTeam.setAllowFriendlyFire(false);
-        Component teamPrefix = MiniMessage.miniMessage().deserialize(String.format("<bold><gradient:%s:%s>" + playerTeam.getName() + "</gradient></bold> <color:%s>»</color> ", ChatFormat.brandColor1, ChatFormat.brandColor2, ChatFormat.arrowColor));
+        Component teamPrefix = MiniMessage.miniMessage().deserialize(String.format("<bold><gradient:%s:%s>" + playerTeam.getName() + "</gradient></bold> <color:%s>»</color> ", ChatFormat.brandColor1, ChatFormat.brandColor1, ChatFormat.arrowColor));
         playerTeam.setPlayerPrefix(ChatFormat.convertComponent(teamPrefix));
         ServerTime.minecraftServer.getScoreboard().addPlayerToTeam(context.getSource().getPlayer().getScoreboardName(), playerTeam);
         context.getSource().getPlayer().addTag("leader_" + playerTeam.getName());
@@ -108,8 +114,8 @@ public class TeamCommand {
         ServerTime.minecraftServer.getScoreboard().removePlayerFromTeam(context.getSource().getPlayer().getScoreboardName(), playerTeam);
         context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("You have left your team."))));
 
-        if (context.getSource().getPlayer().getTags().contains("leader_" + playerTeam)) {
-            context.getSource().getPlayer().removeTag("leader_" + playerTeam);
+        if (context.getSource().getPlayer().getTags().contains("leader_" + playerTeam.getName())) {
+            context.getSource().getPlayer().removeTag("leader_" + playerTeam.getName());
             ServerTime.minecraftServer.getScoreboard().removePlayerTeam(playerTeam);
         }
 
@@ -262,7 +268,7 @@ public class TeamCommand {
             return 1;
         }
 
-        Component teamPrefix = MiniMessage.miniMessage().deserialize(String.format("<bold><gradient:%s:%s>" + team.getName() + "</gradient></bold> <color:%s>»</color> ", ChatFormat.convertChatFormatting(color), ChatFormat.getSecondaryColor(ChatFormat.convertChatFormatting(color)), ChatFormat.arrowColor));
+        Component teamPrefix = MiniMessage.miniMessage().deserialize(String.format("<bold><gradient:%s:%s>" + team.getName() + "</gradient></bold> <color:%s>»</color> ", ChatFormat.convertChatFormatting(color), ChatFormat.convertChatFormatting(color), ChatFormat.arrowColor));
         team.setPlayerPrefix(ChatFormat.convertComponent(teamPrefix));
         context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("Changed team prefix color!"))));
 
