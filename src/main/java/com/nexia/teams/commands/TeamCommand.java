@@ -18,6 +18,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.ColorArgument;
 import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.arguments.TeamArgument;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.scores.PlayerTeam;
 
@@ -33,6 +34,7 @@ public class TeamCommand {
             "t accept" + commandSeparator + "Accept an invite to a team",
             "t decline" + commandSeparator + "Decline an invite to a team",
             "t color <color>" + commandSeparator + "Change the prefix color of your team",
+            "t list <name>" + commandSeparator + "List of members of a team",
     };
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext commandBuildContext, Commands.CommandSelection commandSelection) {
@@ -54,6 +56,9 @@ public class TeamCommand {
                         .executes(TeamCommand::leaveTeam))
                 .then(Commands.literal("color")
                         .then(Commands.argument("color", ColorArgument.color()).executes(context -> setPrefixColor(context, ColorArgument.getColor(context, "color")))))
+                .then(Commands.literal("list")
+                        .executes(context -> listMembers(context, context.getSource().getPlayer().getTeam()))
+                        .then(Commands.argument("team", TeamArgument.team()).executes(context -> listMembers(context, TeamArgument.getTeam(context, "team")))))
         );
     }
 
@@ -271,6 +276,22 @@ public class TeamCommand {
         team.setPlayerPrefix(ChatFormat.convertComponent(teamPrefix));
         context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("Changed team prefix color!"))));
 
+        return 0;
+    }
+
+    private static int listMembers(CommandContext<CommandSourceStack> context, PlayerTeam playerTeam) {
+        if (playerTeam == null) {
+            context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("You aren't in a team!"))));
+            return 1;
+        }
+
+        Component message = Component.text("List of members in %s:".formatted(playerTeam.getName()));
+
+        for (String teamPlayer : context.getSource().getPlayer().getScoreboard().getPlayerTeam(playerTeam.getName()).getPlayers()) {
+            message = message.append(Component.text("\n" + teamPlayer));
+        }
+
+        context.getSource().getPlayer().sendSystemMessage(ChatFormat.convertComponent(message));
         return 0;
     }
 }
