@@ -8,9 +8,15 @@ import com.nexia.teams.utilities.teams.TeamUtil;
 import com.nexia.teams.utilities.time.ServerTime;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.ColorArgument;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.scores.PlayerTeam;
@@ -24,7 +30,8 @@ public class TeamCommand {
             "t leave" + commandSeparator + "Leave your current team",
             "t invite <player>" + commandSeparator + "Invite a player to a team",
             "t accept <name>" + commandSeparator + "Accept an invite to a team",
-            //"t decline <name>" + commandSeparator + "Decline an invite to a team",
+            "t decline <name>" + commandSeparator + "Decline an invite to a team",
+            "t color <name>" + commandSeparator + "Change the prefix color of your team",
     };
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext commandBuildContext, Commands.CommandSelection commandSelection) {
@@ -36,8 +43,16 @@ public class TeamCommand {
                         .executes(TeamCommand::leaveTeam))
                 .then(Commands.literal("invite")
                         .then(Commands.argument("player", EntityArgument.player()).executes(context -> invitePlayer(context, EntityArgument.getPlayer(context, "player")))))
+                .then(Commands.literal("kick")
+                        .then(Commands.argument("player", EntityArgument.player()).executes(context -> kickPlayer(context, EntityArgument.getPlayer(context, "player")))))
                 .then(Commands.literal("accept")
                         .executes(TeamCommand::acceptInvite))
+                .then(Commands.literal("decline")
+                        .executes(TeamCommand::declineInvite))
+                .then(Commands.literal("leave")
+                        .executes(TeamCommand::leaveTeam))
+                .then(Commands.literal("color")
+                        .then(Commands.argument("color", ColorArgument.color()).executes(context -> setPrefixColor(context, ColorArgument.getColor(context, "color")))))
         );
     }
 
@@ -71,24 +86,40 @@ public class TeamCommand {
         }
 
         PlayerTeam playerTeam = ServerTime.minecraftServer.getScoreboard().addPlayerTeam(name);
+        playerTeam.setSeeFriendlyInvisibles(true);
+        playerTeam.setAllowFriendlyFire(false);
+        Component teamPrefix = MiniMessage.miniMessage().deserialize(String.format("<bold><gradient:%s:%s>" + playerTeam.getName() + "</gradient></bold> <color:%s>»</color> ", ChatFormat.brandColor1, ChatFormat.brandColor2, ChatFormat.arrowColor));
+        playerTeam.setPlayerPrefix(ChatFormat.convertComponent(teamPrefix));
         ServerTime.minecraftServer.getScoreboard().addPlayerToTeam(context.getSource().getPlayer().getScoreboardName(), playerTeam);
+        context.getSource().getPlayer().addTag("leader_" + playerTeam.getName());
+        context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("You have created your own team."))));
 
         return 0;
     }
 
     private static int leaveTeam(CommandContext<CommandSourceStack> context) {
-        if (context.getSource().getPlayer().getTeam() == null) {
+        PlayerTeam playerTeam = context.getSource().getPlayer().getTeam();
+
+        if (playerTeam == null) {
             context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("You aren't in a team!"))));
             return 1;
         }
 
-        ServerTime.minecraftServer.getScoreboard().removePlayerFromTeam(context.getSource().getPlayer().getScoreboardName(), context.getSource().getPlayer().getTeam());
+        ServerTime.minecraftServer.getScoreboard().removePlayerFromTeam(context.getSource().getPlayer().getScoreboardName(), playerTeam);
         context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("You have left your team."))));
+
+        if (context.getSource().getPlayer().getTags().contains("leader_" + playerTeam)) {
+            context.getSource().getPlayer().removeTag("leader_" + playerTeam);
+            ServerTime.minecraftServer.getScoreboard().removePlayerTeam(playerTeam);
+        }
+
         return 0;
     }
 
     private static int invitePlayer(CommandContext<CommandSourceStack> context, ServerPlayer player) {
-        if (context.getSource().getPlayer().getTeam() == null) {
+        PlayerTeam playerTeam = context.getSource().getPlayer().getTeam();
+
+        if (playerTeam == null) {
             context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("You aren't in a team!"))));
             return 1;
         }
@@ -103,9 +134,63 @@ public class TeamCommand {
             return 1;
         }
 
+        if (playerTeam.getPlayers().size() >= 3) {
+            context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("Your team has reached the member limit!"))));
+            return 1;
+        }
+
+        if (!context.getSource().getPlayer().getTags().contains("leader_" + playerTeam.getName())) {
+            context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("You aren't the team leader!"))));
+            return 1;
+        }
+
+        Component yes = Component.text("[").color(NamedTextColor.DARK_GRAY)
+                .append(Component.text("ACCEPT")
+                        .color(ChatFormat.Minecraft.green)
+                        .decorate(TextDecoration.BOLD)
+                        .hoverEvent(HoverEvent.showText(Component.text("Click me").color(ChatFormat.brandColor2)))
+                        .clickEvent(ClickEvent.runCommand("/t accept")))
+                .append(Component.text("]  ").color(NamedTextColor.DARK_GRAY)
+                );
+
+        Component no = Component.text("[").color(NamedTextColor.DARK_GRAY)
+                .append(Component.text("DECLINE")
+                        .color(ChatFormat.Minecraft.red)
+                        .decoration(TextDecoration.BOLD, true)
+                        .hoverEvent(HoverEvent.showText(Component.text("Click me")
+                                .color(ChatFormat.brandColor2)))
+                        .clickEvent(ClickEvent.runCommand("/t decline")))
+                .append(Component.text("]").color(NamedTextColor.DARK_GRAY)
+                );
+
         TeamUtil.addInvite(player, context.getSource().getPlayer().getTeam().getName());
         player.sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("You've been invited to %s!".formatted(context.getSource().getPlayer().getTeam().getName())))));
         context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("Invite sent has been sent to %s!".formatted(player.getScoreboardName())))));
+        player.sendSystemMessage(ChatFormat.convertComponent(yes.append(no)));
+
+        return 0;
+    }
+
+    private static int kickPlayer(CommandContext<CommandSourceStack> context, ServerPlayer player) {
+        PlayerTeam playerTeam = context.getSource().getPlayer().getTeam();
+
+        if (playerTeam == null) {
+            context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("You aren't in a team!"))));
+            return 1;
+        }
+
+        if (player.getTeam() != playerTeam) {
+            context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("Can't kick a player from another team!"))));
+            return 1;
+        }
+
+        if (!context.getSource().getPlayer().getTags().contains("leader_" + playerTeam.getName())) {
+            context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("You aren't the team leader!"))));
+            return 1;
+        }
+
+        ServerTime.minecraftServer.getScoreboard().removePlayerFromTeam(player.getScoreboardName(), playerTeam);
+        context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("Player %s has been kicked.".formatted(player.getScoreboardName())))));
 
         return 0;
     }
@@ -134,7 +219,52 @@ public class TeamCommand {
             }
         }
 
+        player.sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("You have accepted the invite."))));
         TeamUtil.removeInvite(player);
+
+        return 0;
+    }
+
+    private static int declineInvite(CommandContext<CommandSourceStack> context) {
+        ServerPlayer player = context.getSource().getPlayer();
+        String teamName = TeamUtil.getInvitedTeam(player);
+
+        if (player.getTeam() != null) {
+            player.sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("You're already in a team!"))));
+            return 1;
+        }
+
+        if (TeamUtil.getInvitedTeam(player) == null) {
+            player.sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("You're not invited to a team!"))));
+            return 1;
+        }
+
+        for (String teamPlayer : player.getScoreboard().getPlayerTeam(teamName).getPlayers()) {
+            ServerPlayer serverPlayer = ServerTime.minecraftServer.getPlayerList().getPlayerByName(teamPlayer);
+
+            if (serverPlayer != null) {
+                serverPlayer.sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("%s hasn't joined your team.".formatted(context.getSource().getPlayer().getScoreboardName())))));
+            }
+        }
+
+        player.sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("You have declined the invite."))));
+        TeamUtil.removeInvite(player);
+
+        return 0;
+    }
+
+
+    private static int setPrefixColor(CommandContext<CommandSourceStack> context, ChatFormatting color) {
+        PlayerTeam team = context.getSource().getPlayer().getTeam();
+
+        if (team == null) {
+            context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("You aren't in a team!"))));
+            return 1;
+        }
+
+        Component teamPrefix = MiniMessage.miniMessage().deserialize(String.format("<bold><gradient:%s:%s>" + team.getName() + "</gradient></bold> <color:%s>»</color> ", ChatFormat.convertChatFormatting(color), ChatFormat.getSecondaryColor(ChatFormat.convertChatFormatting(color)), ChatFormat.arrowColor));
+        team.setPlayerPrefix(ChatFormat.convertComponent(teamPrefix));
+        context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("Changed team prefix color!"))));
 
         return 0;
     }
