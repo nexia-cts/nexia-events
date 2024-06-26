@@ -41,7 +41,7 @@ public abstract class ServerTime {
     public static void everyTick(MinecraftServer server) {
         totalTickCount++;
 
-        TeamUtil.tick();
+        TeamUtil.tick(server);
         if (totalTickCount % 20 == 0) {
             everySecond();
         }

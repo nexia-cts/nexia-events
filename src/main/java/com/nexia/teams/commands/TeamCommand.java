@@ -12,7 +12,6 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
@@ -100,10 +99,10 @@ public class TeamCommand {
         PlayerTeam playerTeam = ServerTime.minecraftServer.getScoreboard().addPlayerTeam(name);
         playerTeam.setSeeFriendlyInvisibles(true);
         playerTeam.setAllowFriendlyFire(false);
-        Component teamPrefix = Component.text(playerTeam.getName()).color(TextColor.color(ChatFormatting.WHITE.getColor()))
+        Component teamPrefix = Component.text(playerTeam.getName()).color(NamedTextColor.WHITE)
                 .append(Component.text(" | ").color(ChatFormat.arrowColor));
         playerTeam.setPlayerPrefix(ChatFormat.convertComponent(teamPrefix));
-        playerTeam.setColor(ChatFormatting.getByName(ChatFormat.getSecondaryColor("white")));
+        playerTeam.setColor(ChatFormat.getSecondaryColor(ChatFormatting.WHITE));
         ServerTime.minecraftServer.getScoreboard().addPlayerToTeam(context.getSource().getPlayer().getScoreboardName(), playerTeam);
         context.getSource().getPlayer().addTag("leader_" + playerTeam.getName());
         context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("You have created your own team."))));
@@ -215,6 +214,7 @@ public class TeamCommand {
 
     private static int acceptInvite(CommandContext<CommandSourceStack> context) {
         ServerPlayer player = context.getSource().getPlayer();
+        assert player != null;
         String teamName = TeamUtil.getInvitedTeam(player);
 
         if (player.getTeam() != null) {
@@ -222,14 +222,14 @@ public class TeamCommand {
             return 1;
         }
 
-        if (TeamUtil.getInvitedTeam(player) == null) {
+        if (teamName == null) {
             context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("You're not invited to a team!"))));
             return 1;
         }
 
         player.getScoreboard().addPlayerToTeam(player.getScoreboardName(), player.getScoreboard().getPlayerTeam(teamName));
 
-        for (String teamPlayer : player.getScoreboard().getPlayerTeam(teamName).getPlayers()) {
+        for (String teamPlayer : ServerTime.minecraftServer.getScoreboard().getPlayerTeam(teamName).getPlayers()) {
             ServerPlayer serverPlayer = ServerTime.minecraftServer.getPlayerList().getPlayerByName(teamPlayer);
 
             if (serverPlayer != null) {
@@ -245,6 +245,7 @@ public class TeamCommand {
 
     private static int declineInvite(CommandContext<CommandSourceStack> context) {
         ServerPlayer player = context.getSource().getPlayer();
+        assert player != null;
         String teamName = TeamUtil.getInvitedTeam(player);
 
         if (player.getTeam() != null) {
@@ -252,12 +253,12 @@ public class TeamCommand {
             return 1;
         }
 
-        if (TeamUtil.getInvitedTeam(player) == null) {
+        if (teamName == null) {
             player.sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("You're not invited to a team!"))));
             return 1;
         }
 
-        for (String teamPlayer : player.getScoreboard().getPlayerTeam(teamName).getPlayers()) {
+        for (String teamPlayer : ServerTime.minecraftServer.getScoreboard().getPlayerTeam(teamName).getPlayers()) {
             ServerPlayer serverPlayer = ServerTime.minecraftServer.getPlayerList().getPlayerByName(teamPlayer);
 
             if (serverPlayer != null) {
@@ -283,7 +284,8 @@ public class TeamCommand {
         Component teamPrefix = Component.text(team.getName()).color(TextColor.color(color.getColor()))
                 .append(Component.text(" | ").color(ChatFormat.arrowColor));
         team.setPlayerPrefix(ChatFormat.convertComponent(teamPrefix));
-        team.setColor(ChatFormatting.getByName(ChatFormat.getSecondaryColor(color.getName())));
+        team.setColor(ChatFormat.getSecondaryColor(color));
+
         context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("Changed team prefix color!"))));
 
         return 0;
@@ -297,11 +299,11 @@ public class TeamCommand {
 
         Component message = Component.text("List of members in %s:".formatted(playerTeam.getName()));
 
-        for (String teamPlayer : context.getSource().getPlayer().getScoreboard().getPlayerTeam(playerTeam.getName()).getPlayers()) {
+        for (String teamPlayer : playerTeam.getPlayers()) {
             message = message.append(Component.text("\n" + teamPlayer));
         }
 
-        context.getSource().getPlayer().sendSystemMessage(ChatFormat.convertComponent(message));
+        context.getSource().sendSystemMessage(ChatFormat.convertComponent(message));
         return 0;
     }
 }

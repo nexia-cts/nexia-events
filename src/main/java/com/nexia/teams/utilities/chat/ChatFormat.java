@@ -1,15 +1,11 @@
 package com.nexia.teams.utilities.chat;
 
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
-
-import static com.nexia.teams.utilities.chat.ChatFormat.Minecraft.*;
-import static com.nexia.teams.utilities.chat.ChatFormat.Minecraft.*;
 
 /*
  * Directly taken from Nexus and Nexia-Mod
@@ -60,27 +56,25 @@ public abstract class ChatFormat {
         return GsonComponentSerializer.gson().deserialize(mcCompString);
     }
 
-    public static String getSecondaryColor(String primary) {
-        String secondary = "";
-        switch (primary) {
-            case "aqua" -> secondary = "dark_aqua";
-            case "dark_aqua" -> secondary = "aqua";
-            case "blue" -> secondary = "dark_blue";
-            case "dark_blue" -> secondary = "blue";
-            case "white" -> secondary = "gray";
-            case "gray" -> secondary = "white";
-            case "dark_gray" -> secondary = "black";
-            case "black" -> secondary = "dark_gray";
-            case "red" -> secondary = "dark_red";
-            case "dark_red" -> secondary = "red";
-            case "green" -> secondary = "dark_green";
-            case "dark_green" -> secondary = "green";
-            case "light_purple" -> secondary = "dark_purple";
-            case "dark_purple" -> secondary = "light_purple";
-            case "yellow" -> secondary = "gold";
-            case "gold" -> secondary = "yellow";
-        }
-        
-        return secondary;
+    public static ChatFormatting getSecondaryColor(ChatFormatting primary) {
+        return switch (primary) {
+            case ChatFormatting.AQUA ->  ChatFormatting.DARK_AQUA;
+            case ChatFormatting.DARK_AQUA ->  ChatFormatting.AQUA;
+            case ChatFormatting.BLUE ->  ChatFormatting.DARK_BLUE;
+            case ChatFormatting.DARK_BLUE ->  ChatFormatting.BLUE;
+            case ChatFormatting.WHITE ->  ChatFormatting.GRAY;
+            case ChatFormatting.GRAY ->  ChatFormatting.WHITE;
+            case ChatFormatting.DARK_GRAY ->  ChatFormatting.BLACK;
+            case ChatFormatting.BLACK ->  ChatFormatting.DARK_GRAY;
+            case ChatFormatting.RED ->  ChatFormatting.DARK_RED;
+            case ChatFormatting.DARK_RED ->  ChatFormatting.RED;
+            case ChatFormatting.GREEN ->  ChatFormatting.DARK_GREEN;
+            case ChatFormatting.DARK_GREEN ->  ChatFormatting.GREEN;
+            case ChatFormatting.LIGHT_PURPLE ->  ChatFormatting.DARK_PURPLE;
+            case ChatFormatting.DARK_PURPLE ->  ChatFormatting.LIGHT_PURPLE;
+            case ChatFormatting.YELLOW ->  ChatFormatting.GOLD;
+            case ChatFormatting.GOLD ->  ChatFormatting.YELLOW;
+            default -> primary;
+        };
     }
 }

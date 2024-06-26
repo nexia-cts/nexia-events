@@ -25,6 +25,7 @@ public class ServerGamePacketListenerMixin {
 
         if (this.player.getCooldowns().isOnCooldown(itemStack.getItem()) && itemStack.getItem() == Items.ENDER_PEARL) {
             double secondsLeft = (double) Math.round((15 * this.player.getCooldowns().getCooldownPercent(itemStack.getItem(), 0.0F) * 100)) / 100;
+            if(secondsLeft >= 14.9) return;
             String secondsLeftText = String.format("You're on pearl cooldown. You have %s seconds left.", secondsLeft);
 
             this.player.sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text(secondsLeftText))));

@@ -4,13 +4,10 @@ import com.nexia.teams.koth.KothGame;
 import com.nexia.teams.koth.KothGameHandler;
 import com.nexia.teams.utilities.chat.ChatFormat;
 import net.kyori.adventure.text.Component;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.AxeItem;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -21,8 +18,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class AxeItemMixin {
     @Inject(method = "useOn", at = @At("HEAD"))
     public void kothAxe(UseOnContext useOnContext, CallbackInfoReturnable<InteractionResult> cir) {
-        Level level = useOnContext.getLevel();
-        BlockPos blockPos = useOnContext.getClickedPos();
         Player player = useOnContext.getPlayer();
 
         String kothName = null;

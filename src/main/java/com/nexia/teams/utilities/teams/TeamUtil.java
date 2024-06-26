@@ -1,10 +1,9 @@
 package com.nexia.teams.utilities.teams;
 
 import com.nexia.teams.utilities.chat.ChatFormat;
-import com.nexia.teams.utilities.time.ServerTime;
 import net.kyori.adventure.text.Component;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.scores.PlayerTeam;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,14 +28,14 @@ public abstract class TeamUtil {
     }
 
 
-    public static void tick() {
+    public static void tick(MinecraftServer server) {
         for (Map.Entry<UUID, TeamInvite> entry : invites.entrySet()) {
             TeamInvite invite = entry.getValue();
 
             if (invite.isExpired()) {
                 UUID playerUuid = entry.getKey();
                 invites.remove(playerUuid);
-                ServerPlayer player = ServerTime.minecraftServer.getPlayerList().getPlayer(playerUuid);
+                ServerPlayer player = server.getPlayerList().getPlayer(playerUuid);
                 if (player != null) {
                     player.sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("Your invite has expired!"))));
                 }
