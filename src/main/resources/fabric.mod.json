@@ -13,6 +13,7 @@
   },
   "license": "All-Rights-Reserved",
   "icon": "assets/nexia-teams/logo.png",
+  "accessWidener": "nexiateams.accesswidener",
   "environment": "server",
   "entrypoints": {
     "main": [

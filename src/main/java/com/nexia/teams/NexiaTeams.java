@@ -28,14 +28,15 @@ public class NexiaTeams implements ModInitializer {
             ServerPlayer player = handler.getPlayer();
 
             player.sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("Welcome to Nexia Teams!"))));
-
-            // load player data here maybe??
         });
 
         ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
             ServerPlayer player = handler.getPlayer();
+            player.getCombatTracker().recheckStatus();
 
-            // unload player data here maybe??
+            if(player.getCombatTracker().inCombat) {
+                ServerTime.minecraftServer.getCommands().performPrefixedCommand(ServerTime.minecraftServer.createCommandSourceStack().withPermission(4).withSuppressedOutput(), "/player " + player.getScoreboardName() + " spawn");
+            }
         });
 
         logger.info("Loading mod...");
