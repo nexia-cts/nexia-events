@@ -15,6 +15,7 @@ import net.minecraft.server.level.ServerPlayer;
 public class MeteorCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext commandBuildContext, Commands.CommandSelection commandSelection) {
         dispatcher.register(Commands.literal("meteor")
+                .requires(commandSourceStack -> commandSourceStack.hasPermission(4))
                 .then(Commands.argument("scheduledTimestamp", IntegerArgumentType.integer())
                 .executes(context -> execute(context, IntegerArgumentType.getInteger(context, "scheduledTimestamp"))))
         );
