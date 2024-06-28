@@ -6,7 +6,9 @@
   "mixins": [
     "AxeItemMixin",
     "EnderPearlMixin",
+    "EndPortalBlockMixin",
     "MinecraftServerMixin",
+    "NetherPortalBlockMixin",
     "ServerGamePacketListenerMixin",
     "mace.MaceItemMixin"
   ],

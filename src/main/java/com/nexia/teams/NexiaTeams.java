@@ -13,9 +13,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class NexiaTeams implements ModInitializer {
-
     public static final String MOD_ID = "nexia-teams";
     public static Logger logger = LoggerFactory.getLogger(MOD_ID);
+    public static boolean pvpEnabled = false;
+    public static boolean endDisabled = true;
+    public static boolean netherDisabled = true;
+    public static boolean hardcoreEnabled = false;
 
     @Override
     public void onInitialize() {

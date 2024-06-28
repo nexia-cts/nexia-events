@@ -13,5 +13,9 @@ public class CommandLoader {
         callbackEvent.register(TeamCommand::register);
         callbackEvent.register(MeteorCommand::register);
         callbackEvent.register(CalendarCommand::register);
+        callbackEvent.register(HardcoreCommand::register);
+        callbackEvent.register(PvpCommand::register);
+        callbackEvent.register(EndCommand::register);
+        callbackEvent.register(NetherCommand::register);
     }
 }

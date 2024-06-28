@@ -6,6 +6,7 @@ import com.nexia.teams.events.koth.KothGameHandler;
 import com.nexia.teams.events.meteor.Meteor;
 import com.nexia.teams.utilities.chat.ChatFormat;
 import com.nexia.teams.utilities.data.KothDataManager;
+import com.nexia.teams.utilities.data.NexiaDataManager;
 import com.nexia.teams.utilities.teams.TeamUtil;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minecraft.core.RegistryAccess;
@@ -23,10 +24,12 @@ public abstract class ServerTime {
     public static void firstTick(MinecraftServer server) {
         ServerTime.minecraftServer = server;
         ChatFormat.provider = Suppliers.ofInstance(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY)).get();
+        NexiaDataManager.loadNexiaData();
         KothDataManager.loadKothGamesData();
     }
 
     public static void stopServer(MinecraftServer server) {
+        NexiaDataManager.saveNexiaData();
         KothGameHandler.stopAllKothGames();
         KothDataManager.saveKothGamesData();
 
