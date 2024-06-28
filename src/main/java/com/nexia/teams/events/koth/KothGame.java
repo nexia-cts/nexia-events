@@ -1,4 +1,4 @@
-package com.nexia.teams.koth;
+package com.nexia.teams.events.koth;
 
 import com.nexia.teams.utilities.chat.ChatFormat;
 import com.nexia.teams.utilities.time.ServerTime;

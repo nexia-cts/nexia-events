@@ -1,7 +1,7 @@
 package com.nexia.teams.mixin;
 
-import com.nexia.teams.koth.KothGame;
-import com.nexia.teams.koth.KothGameHandler;
+import com.nexia.teams.events.koth.KothGame;
+import com.nexia.teams.events.koth.KothGameHandler;
 import com.nexia.teams.utilities.chat.ChatFormat;
 import net.kyori.adventure.text.Component;
 import net.minecraft.world.InteractionResult;

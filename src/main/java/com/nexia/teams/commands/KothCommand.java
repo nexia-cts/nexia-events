@@ -4,8 +4,8 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
-import com.nexia.teams.koth.KothGame;
-import com.nexia.teams.koth.KothGameHandler;
+import com.nexia.teams.events.koth.KothGame;
+import com.nexia.teams.events.koth.KothGameHandler;
 import com.nexia.teams.utilities.chat.ChatFormat;
 import net.kyori.adventure.text.Component;
 import net.minecraft.commands.CommandBuildContext;
@@ -159,7 +159,7 @@ public class KothCommand {
         return 0;
     }
 
-    private static int scheduleKoth(CommandContext<CommandSourceStack> context, String name, long epoch) {
+    private static int scheduleKoth(CommandContext<CommandSourceStack> context, String name, long scheduledTimestamp) {
         KothGame kothGame = KothGameHandler.getKothGameByName(name);
 
         if (kothGame == null) {
@@ -172,7 +172,13 @@ public class KothCommand {
             return 1;
         }
 
-        kothGame.scheduledTimestamp = epoch;
+        long unixTime = System.currentTimeMillis() / 1000L;
+        if (scheduledTimestamp < unixTime) {
+            context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("Cannot schedule a KOTH in the past!"))));
+            return 1;
+        }
+
+        kothGame.scheduledTimestamp = scheduledTimestamp;
         context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("Scheduled KOTH."))));
         return 0;
     }

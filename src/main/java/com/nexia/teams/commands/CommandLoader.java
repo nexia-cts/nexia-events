@@ -9,5 +9,6 @@ public class CommandLoader {
 
         callbackEvent.register(KothCommand::register);
         callbackEvent.register(TeamCommand::register);
+        callbackEvent.register(MeteorCommand::register);
     }
 }

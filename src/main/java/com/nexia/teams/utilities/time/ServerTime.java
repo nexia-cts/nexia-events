@@ -1,8 +1,9 @@
 package com.nexia.teams.utilities.time;
 
 import com.google.common.base.Suppliers;
-import com.nexia.teams.koth.KothGame;
-import com.nexia.teams.koth.KothGameHandler;
+import com.nexia.teams.events.koth.KothGame;
+import com.nexia.teams.events.koth.KothGameHandler;
+import com.nexia.teams.events.meteor.Meteor;
 import com.nexia.teams.utilities.chat.ChatFormat;
 import com.nexia.teams.utilities.data.KothDataManager;
 import com.nexia.teams.utilities.teams.TeamUtil;
@@ -50,6 +51,7 @@ public abstract class ServerTime {
     static void everySecond() {
         totalSecondCount++;
 
+        Meteor.tick();
         long unixTime = System.currentTimeMillis() / 1000L;
         for (KothGame kothGame : KothGameHandler.kothGames) {
             if (kothGame.scheduledTimestamp == null) continue;

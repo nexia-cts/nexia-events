@@ -2,6 +2,7 @@ package com.nexia.teams.mixin;
 
 import com.nexia.teams.utilities.chat.ChatFormat;
 import net.kyori.adventure.text.Component;
+import net.minecraft.network.protocol.game.ServerboundTeleportToEntityPacket;
 import net.minecraft.network.protocol.game.ServerboundUseItemPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
@@ -30,5 +31,10 @@ public class ServerGamePacketListenerMixin {
 
             this.player.sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text(secondsLeftText))));
         }
+    }
+
+    @Inject(method = "handleTeleportToEntityPacket", at = @At("HEAD"), cancellable = true)
+    public void disableSpectatorsTeleporting(ServerboundTeleportToEntityPacket serverboundTeleportToEntityPacket, CallbackInfo ci) {
+        if (this.player.isSpectator()) ci.cancel();
     }
 }

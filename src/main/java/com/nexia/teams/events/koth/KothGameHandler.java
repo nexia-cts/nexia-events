@@ -1,9 +1,9 @@
-package com.nexia.teams.koth;
+package com.nexia.teams.events.koth;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class KothGameHandler {
+public abstract class KothGameHandler {
      public static List<KothGame> kothGames = new ArrayList<>();
 
      public static KothGame getKothGameByName(String name) {

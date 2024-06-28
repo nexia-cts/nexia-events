@@ -1,8 +1,8 @@
 package com.nexia.teams.utilities.data;
 
 import com.google.gson.Gson;
-import com.nexia.teams.koth.KothGame;
-import com.nexia.teams.koth.KothGameHandler;
+import com.nexia.teams.events.koth.KothGame;
+import com.nexia.teams.events.koth.KothGameHandler;
 import com.nexia.teams.utilities.time.ServerTime;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.world.phys.AABB;
