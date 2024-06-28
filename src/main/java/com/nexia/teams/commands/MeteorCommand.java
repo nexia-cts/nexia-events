@@ -25,7 +25,7 @@ public class MeteorCommand {
         long unixTime = System.currentTimeMillis() / 1000L;
         if (scheduledTimestamp < unixTime) {
             context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("Cannot schedule a meteor in the past!"))));
-            return 0;
+            return 1;
         }
 
         Meteor.scheduledTimestamp = scheduledTimestamp;

@@ -17,7 +17,7 @@ import org.joml.Vector3f;
 public abstract class Meteor {
     public static Long scheduledTimestamp = null;
     public static ServerPlayer serverPlayer = null;
-    public static int[] meteorCoordinates = new int[]{0, 400, 0};
+    public static int[] meteorCoordinates = new int[]{0, 324, 0};
 
     public static void tick() {
         if (scheduledTimestamp == null) return;
@@ -64,7 +64,7 @@ public abstract class Meteor {
         LargeFireball largeFireball = new LargeFireball(EntityType.FIREBALL, world);
         largeFireball.explosionPower = 20;
         largeFireball.setPos(meteorCoordinates[0], meteorCoordinates[1], meteorCoordinates[2]);
-        largeFireball.setDeltaMovement(0, -35, 0);
+        largeFireball.yPower = -1.35;
 
         world.addFreshEntity(blockDisplay);
         world.addFreshEntity(armorStand);
