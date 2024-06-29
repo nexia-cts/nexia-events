@@ -17,7 +17,7 @@ public class PvpCommand {
 
     private static int execute(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         NexiaTeams.pvpEnabled = !NexiaTeams.pvpEnabled;
-        context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text((NexiaTeams.hardcoreEnabled ? "Enabled" : "Disabled") + " pvp."))));
+        context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text((NexiaTeams.pvpEnabled ? "Enabled" : "Disabled") + " pvp."))));
         ChatFormat.nexiaTitle(context.getSource(), "PVP has been " + (NexiaTeams.pvpEnabled ? "enabled" : "disabled"));
         return 0;
     }
