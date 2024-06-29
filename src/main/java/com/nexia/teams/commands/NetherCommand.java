@@ -2,6 +2,7 @@ package com.nexia.teams.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.nexia.teams.NexiaTeams;
 import com.nexia.teams.utilities.chat.ChatFormat;
 import net.kyori.adventure.text.Component;
@@ -14,10 +15,10 @@ public class NetherCommand {
         dispatcher.register(Commands.literal("nether").requires(commandSourceStack -> commandSourceStack.hasPermission(4)).executes(NetherCommand::execute));
     }
 
-    private static int execute(CommandContext<CommandSourceStack> context) {
+    private static int execute(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         NexiaTeams.netherDisabled = !NexiaTeams.netherDisabled;
         context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text((NexiaTeams.netherDisabled ? "Disabled" : "Enabled") + " nether."))));
-        ChatFormat.nexiaTitle("Nether has been " + (NexiaTeams.netherDisabled ? "disabled" : "enabled"));
+        ChatFormat.nexiaTitle(context.getSource(), "Nether has been " + (NexiaTeams.netherDisabled ? "disabled" : "enabled"));
         return 0;
     }
 }

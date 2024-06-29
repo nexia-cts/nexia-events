@@ -1,17 +1,23 @@
 package com.nexia.teams.utilities.chat;
 
+import com.google.common.base.Function;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.nexia.teams.utilities.time.ServerTime;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentUtils;
+import net.minecraft.network.protocol.game.ClientboundSetTitleTextPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
 
 /*
  * Directly taken from Nexus and Nexia-Mod
@@ -84,11 +90,20 @@ public abstract class ChatFormat {
         };
     }
 
-    public static void nexiaTitle(String message) {
+    public static void nexiaTitle(CommandSourceStack commandSourceStack, String message) throws CommandSyntaxException {
         Component messageComponent = convertComponent(MiniMessage.miniMessage().deserialize(String.format("<bold><gradient:%s:%s>%s</gradient></bold>", ChatFormat.brandColor1, ChatFormat.brandColor2, message)));
 
         for (ServerPlayer serverPlayer : ServerTime.minecraftServer.getPlayerList().getPlayers()) {
-            serverPlayer.sendSystemMessage(messageComponent, true);
+            Function<Component, ClientboundSetTitleTextPacket> title = ClientboundSetTitleTextPacket::new;
+            serverPlayer.connection.send(title.apply(ComponentUtils.updateForEntity(commandSourceStack, messageComponent, (Entity)serverPlayer, 0)));
+            serverPlayer.level().playSound(
+                    null,
+                    BlockPos.containing(serverPlayer.getPosition(0)),
+                    SoundEvents.ENDER_DRAGON_GROWL,
+                    SoundSource.MASTER,
+                    1f,
+                    1f
+            );
         }
     }
 }
