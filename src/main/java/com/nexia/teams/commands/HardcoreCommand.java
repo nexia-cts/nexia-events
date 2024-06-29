@@ -17,6 +17,7 @@ public class HardcoreCommand {
     private static int execute(CommandContext<CommandSourceStack> context) {
         NexiaTeams.hardcoreEnabled = !NexiaTeams.hardcoreEnabled;
         context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text((NexiaTeams.hardcoreEnabled ? "Enabled" : "Disabled") + " hardcore death system."))));
+        ChatFormat.nexiaTitle("Hardcore has been " + (NexiaTeams.hardcoreEnabled ? "enabled" : "disabled"));
         return 0;
     }
 }

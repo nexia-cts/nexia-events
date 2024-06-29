@@ -17,6 +17,7 @@ public class PvpCommand {
     private static int execute(CommandContext<CommandSourceStack> context) {
         NexiaTeams.pvpEnabled = !NexiaTeams.pvpEnabled;
         context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text((NexiaTeams.hardcoreEnabled ? "Enabled" : "Disabled") + " pvp."))));
+        ChatFormat.nexiaTitle("PVP has been " + (NexiaTeams.pvpEnabled ? "enabled" : "disabled"));
         return 0;
     }
 }

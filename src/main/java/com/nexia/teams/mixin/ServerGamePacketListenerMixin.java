@@ -22,8 +22,10 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ServerGamePacketListenerImpl.class)
-public class ServerGamePacketListenerMixin {
+public abstract class ServerGamePacketListenerMixin {
     @Shadow public ServerPlayer player;
+
+    @Shadow public abstract ServerPlayer getPlayer();
 
     @Inject(method = "handleUseItem", at = @At("TAIL"))
     public void pearlCooldownMessage(ServerboundUseItemPacket serverboundUseItemPacket, CallbackInfo ci) {
@@ -52,6 +54,6 @@ public class ServerGamePacketListenerMixin {
 
     @ModifyArg(method = "handleClientCommand", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;setGameMode(Lnet/minecraft/world/level/GameType;)Z"))
     public GameType deathSystem(GameType gameType) {
-        return NexiaTeams.hardcoreEnabled ? GameType.SPECTATOR : GameType.SURVIVAL;
+        return NexiaTeams.hardcoreEnabled ? GameType.SPECTATOR : this.getPlayer().gameMode.getGameModeForPlayer();
     }
 }

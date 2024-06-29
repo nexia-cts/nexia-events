@@ -15,8 +15,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class NetherPortalBlockMixin {
     @Inject(method = "entityInside", at = @At("HEAD"), cancellable = true)
     private void disableNetherPortal(BlockState blockState, Level level, BlockPos blockPos, Entity entity, CallbackInfo ci) {
-        if (NexiaTeams.netherDisabled) {
-            ci.cancel();
-        }
+        if (NexiaTeams.netherDisabled) ci.cancel();
     }
 }

@@ -5,12 +5,14 @@ import com.nexia.teams.utilities.chat.ChatFormat;
 import com.nexia.teams.utilities.time.ServerTime;
 import net.kyori.adventure.text.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.projectile.LargeFireball;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
@@ -56,15 +58,18 @@ public abstract class Meteor {
         Transformation transformation = new Transformation(new Vector3f(-2, -4, -2), new Quaternionf(0, 0, 0, 1), new Vector3f(4, 4, 4), new Quaternionf(0, 0, 0, 1));
         blockDisplay.setTransformation(transformation);
         blockDisplay.setPos(meteorCoordinates[0], meteorCoordinates[1], meteorCoordinates[2]);
+        //AABB boundingBox = blockDisplay.getBoundingBox();
+        //blockDisplay.setBoundingBox(new AABB(boundingBox.minX + 2, boundingBox.minY, boundingBox.minZ + 2, boundingBox.maxX - 2, boundingBox.maxY -4, boundingBox.maxZ - 2));
 
         ArmorStand armorStand = new ArmorStand(world, meteorCoordinates[0], meteorCoordinates[1], meteorCoordinates[2]);
         armorStand.setInvisible(true);
         armorStand.setInvulnerable(true);
 
         LargeFireball largeFireball = new LargeFireball(EntityType.FIREBALL, world);
-        largeFireball.explosionPower = 20;
+        largeFireball.explosionPower = 12;
         largeFireball.setPos(meteorCoordinates[0], meteorCoordinates[1], meteorCoordinates[2]);
-        largeFireball.yPower = -1.35;
+        largeFireball.setDeltaMovement(calculateViewVector(90, 0).normalize());
+        largeFireball.yPower = largeFireball.getDeltaMovement().y * 0.1;
 
         world.addFreshEntity(blockDisplay);
         world.addFreshEntity(armorStand);
@@ -72,5 +77,15 @@ public abstract class Meteor {
 
         blockDisplay.startRiding(armorStand);
         armorStand.startRiding(largeFireball);
+    }
+
+    public static Vec3 calculateViewVector(float f, float g) {
+        float h = f * ((float)Math.PI / 180);
+        float i = -g * ((float)Math.PI / 180);
+        float j = Mth.cos(i);
+        float k = Mth.sin(i);
+        float l = Mth.cos(h);
+        float m = Mth.sin(h);
+        return new Vec3(k * l, -m, j * l);
     }
 }

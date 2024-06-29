@@ -17,6 +17,7 @@ public class NetherCommand {
     private static int execute(CommandContext<CommandSourceStack> context) {
         NexiaTeams.netherDisabled = !NexiaTeams.netherDisabled;
         context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text((NexiaTeams.netherDisabled ? "Disabled" : "Enabled") + " nether."))));
+        ChatFormat.nexiaTitle("Nether has been " + (NexiaTeams.netherDisabled ? "disabled" : "enabled"));
         return 0;
     }
 }

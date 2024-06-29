@@ -17,6 +17,7 @@ public class EndCommand {
     private static int execute(CommandContext<CommandSourceStack> context) {
         NexiaTeams.endDisabled = !NexiaTeams.endDisabled;
         context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text((NexiaTeams.endDisabled ? "Disabled" : "Enabled") + " end."))));
+        ChatFormat.nexiaTitle("End has been " + (NexiaTeams.endDisabled ? "disabled" : "enabled"));
         return 0;
     }
 }

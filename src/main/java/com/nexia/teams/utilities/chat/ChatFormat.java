@@ -1,11 +1,17 @@
 package com.nexia.teams.utilities.chat;
 
+import com.nexia.teams.utilities.time.ServerTime;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 
 /*
  * Directly taken from Nexus and Nexia-Mod
@@ -76,5 +82,13 @@ public abstract class ChatFormat {
             case ChatFormatting.GOLD ->  ChatFormatting.YELLOW;
             default -> primary;
         };
+    }
+
+    public static void nexiaTitle(String message) {
+        Component messageComponent = convertComponent(MiniMessage.miniMessage().deserialize(String.format("<bold><gradient:%s:%s>%s</gradient></bold>", ChatFormat.brandColor1, ChatFormat.brandColor2, message)));
+
+        for (ServerPlayer serverPlayer : ServerTime.minecraftServer.getPlayerList().getPlayers()) {
+            serverPlayer.sendSystemMessage(messageComponent, true);
+        }
     }
 }

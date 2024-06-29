@@ -22,7 +22,6 @@ public class NexiaTeams implements ModInitializer {
 
     @Override
     public void onInitialize() {
-
         ServerLifecycleEvents.SERVER_STARTED.register(ServerTime::firstTick);
         ServerLifecycleEvents.SERVER_STOPPING.register(ServerTime::stopServer);
         ServerTickEvents.END_SERVER_TICK.register(ServerTime::everyTick);

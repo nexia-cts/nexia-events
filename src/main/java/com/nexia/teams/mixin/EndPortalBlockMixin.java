@@ -15,8 +15,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class EndPortalBlockMixin {
     @Inject(method = "entityInside", at = @At("HEAD"), cancellable = true)
     private void disableEnd(BlockState blockState, Level level, BlockPos blockPos, Entity entity, CallbackInfo ci) {
-        if (NexiaTeams.endDisabled) {
-            ci.cancel();
-        }
+        if (NexiaTeams.endDisabled) ci.cancel();
     }
 }
