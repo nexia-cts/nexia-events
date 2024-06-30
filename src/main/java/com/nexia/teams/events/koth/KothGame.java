@@ -1,21 +1,16 @@
 package com.nexia.teams.events.koth;
 
-import com.mojang.serialization.Dynamic;
-import com.mojang.serialization.DynamicLike;
 import com.nexia.teams.utilities.chat.ChatFormat;
 import com.nexia.teams.utilities.time.ServerTime;
-import net.fabricmc.fabric.api.loot.v2.LootTableSource;
 import net.kyori.adventure.text.Component;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.SeededContainerLoot;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
-import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 
@@ -64,7 +59,7 @@ public class KothGame {
 
         if (winner != null) {
             ItemStack reward = Items.CHEST.getDefaultInstance();
-            reward.set(DataComponents.CONTAINER_LOOT, new SeededContainerLoot(BuiltInLootTables.END_CITY_TREASURE, 0));
+            reward.set(DataComponents.CONTAINER_LOOT, new SeededContainerLoot(BuiltInLootTables.END_CITY_TREASURE, level.getSeed()));
             winner.addItem(reward);
 
             for (ServerPlayer serverPlayer : ServerTime.minecraftServer.getPlayerList().getPlayers()) {
