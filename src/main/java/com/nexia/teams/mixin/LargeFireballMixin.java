@@ -9,6 +9,7 @@ import net.minecraft.world.entity.projectile.LargeFireball;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.phys.HitResult;
@@ -36,10 +37,14 @@ public abstract class LargeFireballMixin extends Fireball {
         Explosion explode = this.level().explode(this, this.getX(), this.getY(), this.getZ(), (float) this.explosionPower, bl, Level.ExplosionInteraction.MOB);
 
         if (this.getTags().contains("meteor")) {
-            List<BlockPos> toBlow = explode.getToBlow();
-            toBlow.sort(Comparator.comparing(BlockPos::getY));
+            BlockPos chestPos = BlockPos.containing(this.getX(), this.getY(), this.getZ());
 
-            BlockPos chestPos = toBlow.getFirst();
+            List<BlockPos> toBlow = explode.getToBlow();
+            if (!toBlow.isEmpty()) {
+                toBlow.sort(Comparator.comparing(BlockPos::getY));
+                chestPos = toBlow.getFirst();
+            }
+
             this.level().setBlock(chestPos, Blocks.CHEST.defaultBlockState(), 1);
             RandomizableContainer.setBlockEntityLootTable(this.level(), this.level().getRandom(), chestPos, BuiltInLootTables.END_CITY_TREASURE);
         }
