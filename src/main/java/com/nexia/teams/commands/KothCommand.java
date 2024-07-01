@@ -213,6 +213,11 @@ public class KothCommand {
             return 1;
         }
 
+        if (!kothGame.isRunning) {
+            context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("That KOTH isn't running!"))));
+            return 1;
+        }
+
         kothGame.end(null);
         return 0;
     }
