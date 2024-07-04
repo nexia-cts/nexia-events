@@ -218,6 +218,7 @@ public class KothCommand {
             return 1;
         }
 
+        context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("You stopped the KOTH."))));
         kothGame.end(null);
         return 0;
     }

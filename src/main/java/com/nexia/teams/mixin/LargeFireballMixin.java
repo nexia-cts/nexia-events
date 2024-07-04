@@ -1,6 +1,10 @@
 package com.nexia.teams.mixin;
 
+import com.nexia.teams.utilities.chat.ChatFormat;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.RandomizableContainer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.Fireball;
@@ -35,16 +39,19 @@ public abstract class LargeFireballMixin extends Fireball {
         Explosion explode = this.level().explode(this, this.getX(), this.getY(), this.getZ(), (float) this.explosionPower, bl, Level.ExplosionInteraction.MOB);
 
         if (this.getTags().contains("meteor")) {
-            BlockPos chestPos = BlockPos.containing(this.getX(), this.getY(), this.getZ());
+            BlockPos chestPosition;
 
             List<BlockPos> toBlow = explode.getToBlow();
             if (!toBlow.isEmpty()) {
                 toBlow.sort(Comparator.comparing(BlockPos::getY));
-                chestPos = toBlow.getFirst();
+                chestPosition = toBlow.getFirst();
+            } else {
+                chestPosition = BlockPos.containing(this.getPosition(0));
             }
 
-            this.level().setBlockAndUpdate(chestPos, Blocks.CHEST.defaultBlockState());
-            RandomizableContainer.setBlockEntityLootTable(this.level(), this.level().getRandom(), chestPos, BuiltInLootTables.END_CITY_TREASURE);
+            this.level().setBlockAndUpdate(chestPosition, Blocks.CHEST.defaultBlockState());
+            this.level().getBlockEntity(chestPosition).setComponents(DataComponentMap.builder().set(DataComponents.CUSTOM_NAME, ChatFormat.convertComponent(MiniMessage.miniMessage().deserialize(String.format("<bold><gradient:%s:%s>KOTH Reward</gradient></bold>", ChatFormat.brandColor1, ChatFormat.brandColor2)))).build());
+            RandomizableContainer.setBlockEntityLootTable(this.level(), this.level().getRandom(), chestPosition, BuiltInLootTables.END_CITY_TREASURE);
         }
         this.discard();
         ci.cancel();

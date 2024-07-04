@@ -3,6 +3,7 @@ package com.nexia.teams.events.koth;
 import com.nexia.teams.utilities.chat.ChatFormat;
 import com.nexia.teams.utilities.time.ServerTime;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerLevel;
@@ -60,6 +61,7 @@ public class KothGame {
         if (winner != null) {
             ItemStack reward = Items.CHEST.getDefaultInstance();
             reward.set(DataComponents.CONTAINER_LOOT, new SeededContainerLoot(BuiltInLootTables.END_CITY_TREASURE, level.getSeed()));
+            reward.set(DataComponents.CUSTOM_NAME, ChatFormat.convertComponent(MiniMessage.miniMessage().deserialize(String.format("<bold><gradient:%s:%s>KOTH Reward</gradient></bold>", ChatFormat.brandColor1, ChatFormat.brandColor2))));
             winner.addItem(reward);
 
             for (ServerPlayer serverPlayer : ServerTime.minecraftServer.getPlayerList().getPlayers()) {
@@ -78,7 +80,7 @@ public class KothGame {
         if(!this.isRunning) return;
 
         for (ServerPlayer serverPlayer : ServerTime.minecraftServer.getPlayerList().getPlayers()) {
-            if (this.area.contains(serverPlayer.getPosition(0.0F)) && this.level == serverPlayer.serverLevel()) {
+            if (this.area.contains(serverPlayer.getPosition(0.0F)) && this.level == serverPlayer.serverLevel() && !serverPlayer.isDeadOrDying() && serverPlayer.gameMode.isSurvival()) {
                 if (playerScores.containsKey(serverPlayer)) {
                     playerScores.put(serverPlayer, playerScores.get(serverPlayer) + 1);
 
