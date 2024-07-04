@@ -22,7 +22,7 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
     // Fabric API. This is technically optional, but you probably want it anyway.
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    modRuntimeOnly(modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
 
     include(implementation("net.kyori:adventure-text-minimessage:4.17.0-SNAPSHOT"))
     include(implementation("net.kyori:adventure-text-serializer-gson:4.17.0-SNAPSHOT"))

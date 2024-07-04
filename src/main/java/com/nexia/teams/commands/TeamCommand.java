@@ -157,23 +157,23 @@ public class TeamCommand {
             return 1;
         }
 
-        Component yes = Component.text("[").color(NamedTextColor.DARK_GRAY)
+        Component yes = Component.text("[").color(ChatFormat.Minecraft.gray)
                 .append(Component.text("ACCEPT")
                         .color(ChatFormat.Minecraft.green)
                         .decorate(TextDecoration.BOLD)
                         .hoverEvent(HoverEvent.showText(Component.text("Click me").color(ChatFormat.brandColor2)))
                         .clickEvent(ClickEvent.runCommand("/t accept")))
-                .append(Component.text("]  ").color(NamedTextColor.DARK_GRAY)
+                .append(Component.text("]  ").color(ChatFormat.Minecraft.gray)
                 );
 
-        Component no = Component.text("[").color(NamedTextColor.DARK_GRAY)
+        Component no = Component.text("[").color(ChatFormat.Minecraft.dark_gray)
                 .append(Component.text("DECLINE")
                         .color(ChatFormat.Minecraft.red)
                         .decoration(TextDecoration.BOLD, true)
                         .hoverEvent(HoverEvent.showText(Component.text("Click me")
                                 .color(ChatFormat.brandColor2)))
                         .clickEvent(ClickEvent.runCommand("/t decline")))
-                .append(Component.text("]").color(NamedTextColor.DARK_GRAY)
+                .append(Component.text("]").color(ChatFormat.Minecraft.dark_gray)
                 );
 
         TeamUtil.addInvite(player, context.getSource().getPlayer().getTeam().getName());
