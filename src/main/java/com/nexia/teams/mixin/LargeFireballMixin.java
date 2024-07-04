@@ -2,14 +2,12 @@ package com.nexia.teams.mixin;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.RandomizableContainer;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.Fireball;
 import net.minecraft.world.entity.projectile.LargeFireball;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.phys.HitResult;
@@ -45,7 +43,7 @@ public abstract class LargeFireballMixin extends Fireball {
                 chestPos = toBlow.getFirst();
             }
 
-            this.level().setBlock(chestPos, Blocks.CHEST.defaultBlockState(), 1);
+            this.level().setBlockAndUpdate(chestPos, Blocks.CHEST.defaultBlockState());
             RandomizableContainer.setBlockEntityLootTable(this.level(), this.level().getRandom(), chestPos, BuiltInLootTables.END_CITY_TREASURE);
         }
         this.discard();

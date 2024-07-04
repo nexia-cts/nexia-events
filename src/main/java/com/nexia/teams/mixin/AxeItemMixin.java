@@ -21,6 +21,7 @@ public class AxeItemMixin {
         Player player = useOnContext.getPlayer();
 
         String kothName = null;
+        assert player != null;
         for (String tag : player.getTags()) {
             if (tag.startsWith("koth_")) {
                 kothName = tag.substring(5);

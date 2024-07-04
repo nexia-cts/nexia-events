@@ -37,7 +37,9 @@ public class NexiaTeams implements ModInitializer {
             player.getCombatTracker().recheckStatus();
 
             if(player.getCombatTracker().inCombat) {
-                ServerTime.minecraftServer.getCommands().performPrefixedCommand(ServerTime.minecraftServer.createCommandSourceStack().withPermission(4).withSuppressedOutput(), "/player " + player.getScoreboardName() + " spawn");
+                // idk if this even works
+                ServerTime.minecraftServer.getCommands().performPrefixedCommand(ServerTime.minecraftServer.createCommandSourceStack().withPermission(4).withSuppressedOutput(), "player " + player.getScoreboardName() + " shadow");
+                ServerTime.minecraftServer.getCommands().performPrefixedCommand(ServerTime.minecraftServer.createCommandSourceStack().withPermission(4).withSuppressedOutput(), "player " + player.getScoreboardName() + " spawn");
             }
         });
 
