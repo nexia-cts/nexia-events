@@ -4,7 +4,9 @@ import com.nexia.teams.utilities.chat.ChatFormat;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.RandomizableContainer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.Fireball;
@@ -50,7 +52,7 @@ public abstract class LargeFireballMixin extends Fireball {
             }
 
             this.level().setBlockAndUpdate(chestPosition, Blocks.CHEST.defaultBlockState());
-            this.level().getBlockEntity(chestPosition).setComponents(DataComponentMap.builder().set(DataComponents.CUSTOM_NAME, ChatFormat.convertComponent(MiniMessage.miniMessage().deserialize(String.format("<bold><gradient:%s:%s>KOTH Reward</gradient></bold>", ChatFormat.brandColor1, ChatFormat.brandColor2)))).build());
+            this.level().getBlockEntity(chestPosition).applyComponents(DataComponentMap.builder().set(DataComponents.CUSTOM_NAME, ChatFormat.convertComponent(MiniMessage.miniMessage().deserialize(String.format("<bold><gradient:%s:%s>Meteor Supply Drop</gradient></bold>", ChatFormat.brandColor1, ChatFormat.brandColor2)))).build(), DataComponentPatch.builder().build());
             RandomizableContainer.setBlockEntityLootTable(this.level(), this.level().getRandom(), chestPosition, BuiltInLootTables.END_CITY_TREASURE);
         }
         this.discard();
