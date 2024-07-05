@@ -6,12 +6,14 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.SeededContainerLoot;
-import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 
@@ -60,7 +62,7 @@ public class KothGame {
 
         if (winner != null) {
             ItemStack reward = Items.CHEST.getDefaultInstance();
-            reward.set(DataComponents.CONTAINER_LOOT, new SeededContainerLoot(BuiltInLootTables.END_CITY_TREASURE, level.getSeed()));
+            reward.set(DataComponents.CONTAINER_LOOT, new SeededContainerLoot(ResourceKey.create(Registries.LOOT_TABLE, new ResourceLocation("nexia:chests/koth")), level.getSeed()));
             reward.set(DataComponents.CUSTOM_NAME, ChatFormat.convertComponent(MiniMessage.miniMessage().deserialize(String.format("<bold><gradient:%s:%s>KOTH Reward</gradient></bold>", ChatFormat.brandColor1, ChatFormat.brandColor2))));
             winner.addItem(reward);
 
