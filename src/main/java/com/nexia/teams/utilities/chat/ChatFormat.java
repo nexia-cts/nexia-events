@@ -95,7 +95,7 @@ public abstract class ChatFormat {
 
         for (ServerPlayer serverPlayer : ServerTime.minecraftServer.getPlayerList().getPlayers()) {
             Function<Component, ClientboundSetTitleTextPacket> title = ClientboundSetTitleTextPacket::new;
-            serverPlayer.connection.send(title.apply(ComponentUtils.updateForEntity(commandSourceStack, messageComponent, (Entity)serverPlayer, 0)));
+            serverPlayer.connection.send(title.apply(ComponentUtils.updateForEntity(commandSourceStack, messageComponent, serverPlayer, 0)));
             serverPlayer.level().playSound(
                     null,
                     BlockPos.containing(serverPlayer.getPosition(0)),

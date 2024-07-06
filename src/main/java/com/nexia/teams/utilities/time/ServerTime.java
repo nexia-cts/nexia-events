@@ -4,6 +4,7 @@ import com.google.common.base.Suppliers;
 import com.nexia.teams.events.koth.KothGame;
 import com.nexia.teams.events.koth.KothGameHandler;
 import com.nexia.teams.events.meteor.Meteor;
+import com.nexia.teams.events.tournament.TournamentFight;
 import com.nexia.teams.utilities.CombatUtil;
 import com.nexia.teams.utilities.chat.ChatFormat;
 import com.nexia.teams.utilities.data.KothDataManager;
@@ -58,6 +59,7 @@ public abstract class ServerTime {
 
         Meteor.second();
         CombatUtil.second();
+        TournamentFight.second();
 
         long unixTime = System.currentTimeMillis() / 1000L;
         for (KothGame kothGame : KothGameHandler.kothGames) {

@@ -19,8 +19,7 @@ import net.minecraft.world.item.component.SeededContainerLoot;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class KothGame {
 
@@ -101,8 +100,21 @@ public class KothGame {
                 } else {
                     playerScores.put(serverPlayer, 1);
                 }
+
+                serverPlayer.sendSystemMessage(ChatFormat.convertComponent(Component.text(String.format("Your score: %s, %s: %s", playerScores.get(serverPlayer), getWinningPlayer().getScoreboardName(), Collections.max(playerScores.values())))), true);
             }
         }
+    }
+
+    public ServerPlayer getWinningPlayer() {
+        if (this.isRunning) {
+            for (Map.Entry<ServerPlayer, Integer> playerEntry : playerScores.entrySet()) {
+                if (Objects.equals(playerEntry.getValue(), Collections.max(playerScores.values()))) {
+                    return playerEntry.getKey();
+                }
+            }
+        }
+        return null;
     }
 
     public ServerPlayer getWinner() {

@@ -1,10 +1,12 @@
 package com.nexia.teams;
 
 import com.nexia.teams.commands.CommandLoader;
+import com.nexia.teams.events.tournament.TournamentFight;
 import com.nexia.teams.utilities.CombatUtil;
 import com.nexia.teams.utilities.chat.ChatFormat;
 import com.nexia.teams.utilities.time.ServerTime;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
@@ -43,6 +45,14 @@ public class NexiaTeams implements ModInitializer {
             player.removeTag("leavekill");
 
         });
+
+        ServerLivingEntityEvents.AFTER_DEATH.register(((entity, damageSource) -> {
+            if (entity instanceof ServerPlayer) {
+                if (TournamentFight.isRunning && (entity.getTeam() == TournamentFight.blueTeam || entity.getTeam() == TournamentFight.redTeam)) {
+                    TournamentFight.end();
+                }
+            }
+        }));
 
         logger.info("Loading mod...");
         logger.info("Registering commands...");

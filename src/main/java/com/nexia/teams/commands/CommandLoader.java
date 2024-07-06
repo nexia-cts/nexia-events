@@ -15,5 +15,6 @@ public class CommandLoader {
         callbackEvent.register(PvpCommand::register);
         callbackEvent.register(EndCommand::register);
         callbackEvent.register(NetherCommand::register);
+        callbackEvent.register(TournamentCommand::register);
     }
 }
