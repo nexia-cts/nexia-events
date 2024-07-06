@@ -44,10 +44,10 @@ public abstract class TournamentFight {
     }
 
     public static void preStart() {
-        fillBlocks(redGate1, Blocks.MANGROVE_FENCE);
-        fillBlocks(redGate2, Blocks.MANGROVE_FENCE);
-        fillBlocks(blueGate1, Blocks.WARPED_FENCE);
-        fillBlocks(blueGate2, Blocks.WARPED_FENCE);
+        fillBlocks(redGate1, Blocks.RED_STAINED_GLASS);
+        fillBlocks(redGate2, Blocks.RED_STAINED_GLASS);
+        fillBlocks(blueGate1, Blocks.CYAN_STAINED_GLASS);
+        fillBlocks(blueGate2, Blocks.CYAN_STAINED_GLASS);
         for (ServerPlayer player : ServerTime.minecraftServer.getPlayerList().getPlayers()) {
             if (spawnArea.contains(player.getPosition(0)) && player.level() == ServerTime.minecraftServer.overworld()) {
                 player.teleportTo(ServerTime.minecraftServer.overworld(), redSpawn[0], 70, redSpawn[2], 90, 0);
