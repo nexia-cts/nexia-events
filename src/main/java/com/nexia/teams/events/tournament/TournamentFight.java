@@ -90,7 +90,7 @@ public abstract class TournamentFight {
     public static void start() {
         isStarting = false;
         isRunning = true;
-        teamTitle("Go!", SoundEvents.RAID_HORN.value());
+        teamTitle("Go!", SoundEvents.GOAT_HORN_SOUND_VARIANTS.get(2).value());
         fillBlocks(redGate1, Blocks.AIR);
         fillBlocks(blueGate1, Blocks.AIR);
     }
@@ -109,7 +109,6 @@ public abstract class TournamentFight {
     }
 
     public static void end() {
-        // TODO winner team ig
         isRunning = false;
         isStarting = false;
         redTeam = null;
