@@ -33,15 +33,15 @@ public class NexiaTeams implements ModInitializer {
             player.sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("Welcome to Nexia Teams!"))));
 
             CombatUtil.combatLoggedPlayersTimer.remove(player.getUUID());
-        });
 
-        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
-            ServerPlayer player = handler.getPlayer();
-            player.getCombatTracker().recheckStatus();
+            if(player.getTags().contains("scheduleKill")) {
+                player.kill();
+                player.sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("You have been killed now due to combat logging (an entity killed you)."))));
 
-            if(player.getCombatTracker().inCombat) {
-                CombatUtil.addPlayer(player);
+                player.removeTag("scheduleKill");
+                player.removeTag("leavekill");
             }
+
         });
 
         logger.info("Loading mod...");

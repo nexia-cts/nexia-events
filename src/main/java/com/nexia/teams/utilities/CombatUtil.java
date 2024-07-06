@@ -20,13 +20,18 @@ public class CombatUtil {
             CombatUtil.combatLoggedPlayersTimer.forEach(((uuid, integer) -> {
                 ServerPlayer serverPlayer = getPlayer(uuid);
                 int newInt = integer - 1;
-
+                
                 combatLoggedPlayersTimer.replace(uuid, newInt);
-                if(serverPlayer == null || newInt > 0) return;
+                if(serverPlayer == null) {
+                    combatLoggedPlayersTimer.remove(uuid);
+                    return;
+                }
+                if(newInt > 0) return;
 
                 CombatUtil.logger.debug("Removing fake player {}: Combat Timer ran out", serverPlayer.getScoreboardName());
 
                 //serverPlayer.connection.disconnect(ChatFormat.convertComponent(Component.text("Combat Log Timer ran out. Disconnecting Bot\n\nIf you are not a bot then please report this issue to the developers.")));
+                serverPlayer.addTag("leavekill");
                 serverPlayer.kill();
 
                 combatLoggedPlayersTimer.remove(uuid);
@@ -45,7 +50,7 @@ public class CombatUtil {
 
         ServerTime.minecraftServer.getCommands().performPrefixedCommand(ServerTime.minecraftServer.createCommandSourceStack().withPermission(4), "player " + player.getScoreboardName() + " shadow");
 
-        combatLoggedPlayersTimer.put(player.getUUID(), player.getCombatTracker().getCombatDuration());
+        combatLoggedPlayersTimer.put(player.getUUID(), 30);
 
         return getPlayer(player.getUUID()) != null;
     }

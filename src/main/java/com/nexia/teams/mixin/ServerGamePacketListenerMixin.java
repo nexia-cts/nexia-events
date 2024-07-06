@@ -1,6 +1,7 @@
 package com.nexia.teams.mixin;
 
 import com.nexia.teams.NexiaTeams;
+import com.nexia.teams.utilities.CombatUtil;
 import com.nexia.teams.utilities.chat.ChatFormat;
 import net.kyori.adventure.text.Component;
 import net.minecraft.network.protocol.game.ServerboundInteractPacket;
@@ -37,6 +38,28 @@ public abstract class ServerGamePacketListenerMixin {
             String secondsLeftText = String.format("You're on pearl cooldown. You have %s seconds left.", secondsLeft);
 
             this.player.sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text(secondsLeftText))));
+        }
+    }
+
+    @Inject(method = "onDisconnect", at = @At("HEAD"))
+    private void disconnect(net.minecraft.network.chat.Component component, CallbackInfo ci) {
+        boolean carpetPlayer = component.getString().equalsIgnoreCase("Killed") // /kill
+                || component.getString().equalsIgnoreCase(player.getScoreboardName() + " died") //killed by entity
+        ;
+        player.getCombatTracker().recheckStatus();
+
+        if(player.getCombatTracker().inCombat && !carpetPlayer) {
+            CombatUtil.addPlayer(player);
+        }
+
+        if(carpetPlayer) {
+            CombatUtil.combatLoggedPlayersTimer.remove(player.getUUID());
+            if(!player.getTags().contains("leavekill")) {
+                player.dropEquipment();
+                player.dropExperience();
+
+                player.addTag("scheduleKill");
+            }
         }
     }
 
