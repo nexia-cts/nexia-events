@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public abstract class TeamUtil {
-    public static final int timeout = 120;
+    public static final int timeout = 2400; // 2 minutes in minecraft ticks
     private static final HashMap<UUID, TeamInvite> invites = new HashMap<>();
 
     public static void addInvite(ServerPlayer player, String teamName) {
