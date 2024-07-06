@@ -24,6 +24,11 @@ public class TournamentCommand {
     }
 
     private static int execute(CommandContext<CommandSourceStack> context, PlayerTeam redTeam, PlayerTeam blueTeam) {
+        if (TournamentFight.isRunning) {
+            context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("There's already a tournament fight going on!"))));
+            return 1;
+        }
+
         TournamentFight.redTeam = redTeam;
         TournamentFight.blueTeam = blueTeam;
 

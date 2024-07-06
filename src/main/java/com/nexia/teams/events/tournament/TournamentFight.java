@@ -90,7 +90,7 @@ public abstract class TournamentFight {
     public static void start() {
         isStarting = false;
         isRunning = true;
-        teamTitle("Go!", SoundEvents.NOTE_BLOCK_CHIME.value());
+        teamTitle("Go!", SoundEvents.RAID_HORN.value());
         fillBlocks(redGate1, Blocks.AIR);
         fillBlocks(blueGate1, Blocks.AIR);
     }
