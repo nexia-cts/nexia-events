@@ -15,7 +15,7 @@ public abstract class Meteor {
     public static ServerPlayer serverPlayer = null;
     public static int[] meteorCoordinates = new int[]{0, 324, 0};
 
-    public static void tick() {
+    public static void second() {
         if (scheduledTimestamp == null) return;
 
         long unixTime = System.currentTimeMillis() / 1000L;

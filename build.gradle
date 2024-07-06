@@ -13,6 +13,7 @@ base {
 repositories {
     maven { url 'https://repo.minebench.de/' }
     maven { url 'https://maven.nucleoid.xyz' }
+    maven { url 'https://masa.dy.fi/maven' }
 }
 
 dependencies {
@@ -23,6 +24,7 @@ dependencies {
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     modRuntimeOnly(modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
+    modRuntimeOnly(modImplementation("carpet:fabric-carpet:${project.minecraft_version}-${project.carpet_version}"))
 
     include(implementation("net.kyori:adventure-text-minimessage:4.17.0-SNAPSHOT"))
     include(implementation("net.kyori:adventure-text-serializer-gson:4.17.0-SNAPSHOT"))

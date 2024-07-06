@@ -1,6 +1,7 @@
 package com.nexia.teams;
 
 import com.nexia.teams.commands.CommandLoader;
+import com.nexia.teams.utilities.CombatUtil;
 import com.nexia.teams.utilities.chat.ChatFormat;
 import com.nexia.teams.utilities.time.ServerTime;
 import net.fabricmc.api.ModInitializer;
@@ -30,6 +31,8 @@ public class NexiaTeams implements ModInitializer {
             ServerPlayer player = handler.getPlayer();
 
             player.sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("Welcome to Nexia Teams!"))));
+
+            CombatUtil.combatLoggedPlayersTimer.remove(player.getUUID());
         });
 
         ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
@@ -37,9 +40,7 @@ public class NexiaTeams implements ModInitializer {
             player.getCombatTracker().recheckStatus();
 
             if(player.getCombatTracker().inCombat) {
-                // idk if this even works
-                ServerTime.minecraftServer.getCommands().performPrefixedCommand(ServerTime.minecraftServer.createCommandSourceStack().withPermission(4).withSuppressedOutput(), "player " + player.getScoreboardName() + " shadow");
-                ServerTime.minecraftServer.getCommands().performPrefixedCommand(ServerTime.minecraftServer.createCommandSourceStack().withPermission(4).withSuppressedOutput(), "player " + player.getScoreboardName() + " spawn");
+                CombatUtil.addPlayer(player);
             }
         });
 
