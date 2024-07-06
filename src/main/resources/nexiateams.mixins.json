@@ -11,8 +11,6 @@
     "MinecraftServerMixin",
     "NetherPortalBlockMixin",
     "ServerGamePacketListenerMixin",
-    "lessannoyingfire.ExplosionMixin",
-    "lessannoyingfire.LivingEntityMixin",
     "mace.MaceItemMixin"
   ],
   "injectors": {
