@@ -52,7 +52,7 @@ public abstract class LargeFireballMixin extends Fireball {
                 chestPosition = BlockPos.containing(this.getPosition(0));
             }
 
-            this.level().setBlockAndUpdate(chestPosition, Blocks.CHEST.defaultBlockState());
+            this.level().setBlockAndUpdate(chestPosition, Blocks.BARREL.defaultBlockState());
             this.level().getBlockEntity(chestPosition).applyComponents(DataComponentMap.builder().set(DataComponents.CUSTOM_NAME, ChatFormat.convertComponent(MiniMessage.miniMessage().deserialize(String.format("<bold><gradient:%s:%s>Meteor Supply Drop</gradient></bold>", ChatFormat.brandColor1, ChatFormat.brandColor2)))).build(), DataComponentPatch.builder().build());
             RandomizableContainer.setBlockEntityLootTable(this.level(), this.level().getRandom(), chestPosition, ResourceKey.create(Registries.LOOT_TABLE, new ResourceLocation("nexia:chests/meteor")));
         }

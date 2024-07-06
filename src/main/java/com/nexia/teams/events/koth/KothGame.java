@@ -3,6 +3,7 @@ package com.nexia.teams.events.koth;
 import com.nexia.teams.utilities.chat.ChatFormat;
 import com.nexia.teams.utilities.time.ServerTime;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
@@ -13,11 +14,13 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.component.SeededContainerLoot;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class KothGame {
 
@@ -63,7 +66,13 @@ public class KothGame {
         if (winner != null) {
             ItemStack reward = Items.CHEST.getDefaultInstance();
             reward.set(DataComponents.CONTAINER_LOOT, new SeededContainerLoot(ResourceKey.create(Registries.LOOT_TABLE, new ResourceLocation("nexia:chests/koth")), level.getSeed()));
-            reward.set(DataComponents.CUSTOM_NAME, ChatFormat.convertComponent(MiniMessage.miniMessage().deserialize(String.format("<bold><gradient:%s:%s>KOTH Reward</gradient></bold>", ChatFormat.brandColor1, ChatFormat.brandColor2))));
+            reward.set(DataComponents.CUSTOM_NAME, ChatFormat.convertComponent(MiniMessage.miniMessage().deserialize(String.format("<bold><gradient:%s:%s>KOTH Reward</gradient></bold> <color:%s>(for %s)</color>", ChatFormat.brandColor1, ChatFormat.brandColor2, ChatFormat.Minecraft.gray, winner.getScoreboardName()))));
+
+            List<net.minecraft.network.chat.Component> list2 = new java.util.ArrayList<>();
+            list2.add(ChatFormat.convertComponent(MiniMessage.miniMessage().deserialize(String.format("<color:%s>Personalized just for </color><bold><gradient:%s:%s>%s</gradient></bold><color:%s>!</color>", ChatFormat.Minecraft.gray, ChatFormat.brandColor1, ChatFormat.brandColor2, winner.getScoreboardName(), ChatFormat.Minecraft.gray)).decoration(TextDecoration.ITALIC, false)));
+            list2.add(ChatFormat.convertComponent(Component.text("Yours to keep ʕっ·ᴥ·ʔっ", ChatFormat.Minecraft.gray).decoration(TextDecoration.ITALIC, false)));
+            reward.set(DataComponents.LORE, new ItemLore(list2));
+
             winner.addItem(reward);
 
             for (ServerPlayer serverPlayer : ServerTime.minecraftServer.getPlayerList().getPlayers()) {
