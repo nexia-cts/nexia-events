@@ -37,10 +37,10 @@ public class NexiaTeams implements ModInitializer {
             if(player.getTags().contains("scheduleKill")) {
                 player.kill();
                 player.sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("You have been killed now due to combat logging (an entity killed you)."))));
-
-                player.removeTag("scheduleKill");
-                player.removeTag("leavekill");
             }
+
+            player.removeTag("scheduleKill");
+            player.removeTag("leavekill");
 
         });
 

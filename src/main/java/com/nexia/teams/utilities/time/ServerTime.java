@@ -72,7 +72,7 @@ public abstract class ServerTime {
 
     public static ServerLevel getLevelByName(String name) {
         for (ServerLevel serverLevel : minecraftServer.getAllLevels())  {
-            if (serverLevel.toString().equals(name)) {
+            if (serverLevel.dimension().location().toString().equals(name)) {
                 return serverLevel;
             }
         }

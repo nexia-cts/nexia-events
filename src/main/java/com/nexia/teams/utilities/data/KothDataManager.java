@@ -26,7 +26,7 @@ public abstract class KothDataManager {
                         (kothGame.area == null) ? null : new double[]{kothGame.area.minX, kothGame.area.minY, kothGame.area.minZ},
                         (kothGame.area == null) ? null : new double[]{kothGame.area.maxX, kothGame.area.maxY, kothGame.area.maxZ},
                         kothGame.time,
-                        kothGame.level.toString()
+                        kothGame.level.dimension().location().toString()
                 );
                 String json = gson.toJson(savedKothData);
                 String directory = getDataDir();
