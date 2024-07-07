@@ -103,14 +103,12 @@ public class KothGame {
             } else {
                 playerScores.put(serverPlayer, 1);
             }
-
-            serverPlayer.sendSystemMessage(ChatFormat.convertComponent(Component.text(String.format("Your score: %s, %s: %s", playerScores.get(serverPlayer), getWinningPlayer().getScoreboardName(), Collections.max(playerScores.values())))), true);
-
+            
             serverPlayer.sendSystemMessage(ChatFormat.convertComponent(
                     Component.text("Your score » ", ChatFormat.Minecraft.gray)
                             .append(Component.text(playerScores.get(serverPlayer), ChatFormat.Minecraft.red))
                             .append(Component.text(" | ", ChatFormat.Minecraft.dark_gray))
-                            .append(Component.text(getWinningPlayer().getScoreboardName() + "(winning)'s score » ", ChatFormat.Minecraft.gray))
+                            .append(Component.text(getWinningPlayer().getScoreboardName() + " (winning)'s score » ", ChatFormat.Minecraft.gray))
                             .append(Component.text(Collections.max(playerScores.values()), ChatFormat.Minecraft.red))
             ), true);
 
