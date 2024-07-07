@@ -55,7 +55,7 @@ public abstract class TournamentFight {
 
         clearStuff(spawnArea);
 
-        fillBlocks(redGate1, Blocks.MANGROVE_FENCE);
+        fillBlocks(redGate1, Blocks.RED_STAINED_GLASS);
         fillBlocks(redGate2, Blocks.RED_STAINED_GLASS);
         fillBlocks(blueGate1, Blocks.CYAN_STAINED_GLASS);
         fillBlocks(blueGate2, Blocks.CYAN_STAINED_GLASS);

@@ -91,20 +91,29 @@ public class KothGame {
     public void kothSecond() {
         if(!this.isRunning) return;
 
-        for (Player player : level.getEntities(EntityType.PLAYER, area, o -> true)) {
-            if (player instanceof ServerPlayer serverPlayer && !serverPlayer.isDeadOrDying() && serverPlayer.gameMode.isSurvival()) {
-                if (playerScores.containsKey(serverPlayer)) {
-                    playerScores.put(serverPlayer, playerScores.get(serverPlayer) + 1);
+        for (Player player : level.getEntities(EntityType.PLAYER, area, o -> o instanceof ServerPlayer player && !player.isDeadOrDying() && player.gameMode.isSurvival())) {
+            ServerPlayer serverPlayer = (ServerPlayer) player;
 
-                    if (playerScores.get(serverPlayer) == time) {
-                        this.end(serverPlayer);
-                    }
-                } else {
-                    playerScores.put(serverPlayer, 1);
+            if (playerScores.containsKey(serverPlayer)) {
+                playerScores.put(serverPlayer, playerScores.get(serverPlayer) + 1);
+
+                if (playerScores.get(serverPlayer) == time) {
+                    this.end(serverPlayer);
                 }
-
-                serverPlayer.sendSystemMessage(ChatFormat.convertComponent(Component.text(String.format("Your score: %s, %s: %s", playerScores.get(serverPlayer), getWinningPlayer().getScoreboardName(), Collections.max(playerScores.values())))), true);
+            } else {
+                playerScores.put(serverPlayer, 1);
             }
+
+            serverPlayer.sendSystemMessage(ChatFormat.convertComponent(Component.text(String.format("Your score: %s, %s: %s", playerScores.get(serverPlayer), getWinningPlayer().getScoreboardName(), Collections.max(playerScores.values())))), true);
+
+            serverPlayer.sendSystemMessage(ChatFormat.convertComponent(
+                    Component.text("Your score » ", ChatFormat.Minecraft.gray)
+                            .append(Component.text(playerScores.get(serverPlayer), ChatFormat.Minecraft.red))
+                            .append(Component.text(" | ", ChatFormat.Minecraft.dark_gray))
+                            .append(Component.text(getWinningPlayer().getScoreboardName() + "(winning)'s score » ", ChatFormat.Minecraft.gray))
+                            .append(Component.text(Collections.max(playerScores.values()), ChatFormat.Minecraft.red))
+            ), true);
+
         }
     }
 

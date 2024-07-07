@@ -157,13 +157,13 @@ public class TeamCommand {
             return 1;
         }
 
-        Component yes = Component.text("[").color(ChatFormat.Minecraft.gray)
+        Component yes = Component.text("[").color(ChatFormat.Minecraft.dark_gray)
                 .append(Component.text("ACCEPT")
                         .color(ChatFormat.Minecraft.green)
                         .decorate(TextDecoration.BOLD)
                         .hoverEvent(HoverEvent.showText(Component.text("Click me").color(ChatFormat.brandColor2)))
                         .clickEvent(ClickEvent.runCommand("/t accept")))
-                .append(Component.text("]  ").color(ChatFormat.Minecraft.gray)
+                .append(Component.text("]  ").color(ChatFormat.Minecraft.dark_gray)
                 );
 
         Component no = Component.text("[").color(ChatFormat.Minecraft.dark_gray)
@@ -178,7 +178,7 @@ public class TeamCommand {
 
         TeamUtil.addInvite(player, context.getSource().getPlayer().getTeam().getName());
         context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("Invite sent has been sent to %s!".formatted(player.getScoreboardName())))));
-        player.sendSystemMessage(ChatFormat.convertComponent(Component.text("You have been invited to " + context.getSource().getPlayer().getTeam().getName())));
+        player.sendSystemMessage(ChatFormat.convertComponent(Component.text("You have been invited to ", ChatFormat.Minecraft.gray).append(Component.text(context.getSource().getPlayer().getTeam().getName(), TextColor.color(context.getSource().getPlayer().getTeam().getColor().getColor())))));
         player.sendSystemMessage(ChatFormat.convertComponent(yes.append(no)));
 
         return 0;
