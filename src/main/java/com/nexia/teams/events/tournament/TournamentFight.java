@@ -4,7 +4,7 @@ import com.google.common.base.Function;
 import com.nexia.teams.utilities.chat.ChatFormat;
 import com.nexia.teams.utilities.time.ServerTime;
 import net.kyori.adventure.text.Component;
-import net.minecraft.commands.arguments.blocks.BlockInput;
+import net.kyori.adventure.text.format.TextColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.network.protocol.game.ClientboundSetTitleTextPacket;
@@ -12,6 +12,12 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ExperienceOrb;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.projectile.Arrow;
+import net.minecraft.world.entity.projectile.SpectralArrow;
+import net.minecraft.world.entity.projectile.ThrownTrident;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
@@ -36,6 +42,28 @@ public abstract class TournamentFight {
     public static AABB blueGate1 = new AABB(-22, 65, -1, -22, 63, 1);
     public static AABB blueGate2 = new AABB(-26, 65, -1, -26, 63, 1);
 
+    public static void clearStuff(AABB area) {
+        for (ItemEntity entity : ServerTime.minecraftServer.overworld().getEntities(EntityType.ITEM, area, o -> true)) {
+            entity.kill();
+        }
+
+        for (Arrow entity : ServerTime.minecraftServer.overworld().getEntities(EntityType.ARROW, area, o -> true)) {
+            entity.kill();
+        }
+
+        for (SpectralArrow entity : ServerTime.minecraftServer.overworld().getEntities(EntityType.SPECTRAL_ARROW, area, o -> true)) {
+            entity.kill();
+        }
+
+        for (ThrownTrident entity : ServerTime.minecraftServer.overworld().getEntities(EntityType.TRIDENT, area, o -> true)) {
+            entity.kill();
+        }
+
+        for (ExperienceOrb entity : ServerTime.minecraftServer.overworld().getEntities(EntityType.EXPERIENCE_ORB, area, o -> true)) {
+            entity.kill();
+        }
+    }
+
     public static void fillBlocks(AABB area, Block block) {
         Iterable<BlockPos> blocks = BlockPos.betweenClosed((int) area.minX, (int) area.minY, (int) area.minZ, (int) area.maxX, (int) area.maxY, (int) area.maxZ);
         for (BlockPos blockPos : blocks) {
@@ -44,6 +72,9 @@ public abstract class TournamentFight {
     }
 
     public static void preStart() {
+
+        clearStuff(spawnArea);
+
         fillBlocks(redGate1, Blocks.RED_STAINED_GLASS);
         fillBlocks(redGate2, Blocks.RED_STAINED_GLASS);
         fillBlocks(blueGate1, Blocks.CYAN_STAINED_GLASS);
@@ -72,7 +103,7 @@ public abstract class TournamentFight {
     public static void teamTitle(String message, SoundEvent soundEvent) {
         for (ServerPlayer serverPlayer : serverPlayers) {
             try {
-                net.minecraft.network.chat.Component component = ChatFormat.convertComponent(Component.text(message));
+                net.minecraft.network.chat.Component component = ChatFormat.convertComponent(Component.text(message, getTitleColor(currentStartTime)));
                 Function<net.minecraft.network.chat.Component, ClientboundSetTitleTextPacket> title = ClientboundSetTitleTextPacket::new;
                 serverPlayer.connection.send(title.apply(ComponentUtils.updateForEntity(ServerTime.minecraftServer.createCommandSourceStack(), component, serverPlayer, 0)));
                 serverPlayer.level().playSound(
@@ -85,6 +116,16 @@ public abstract class TournamentFight {
                 );
             } catch (Exception ignored) {}
         }
+    }
+
+    public static TextColor getTitleColor(int currentStartTime) {
+        if(currentStartTime == 2) {
+            return ChatFormat.Minecraft.yellow;
+        } else if(currentStartTime <= 1) {
+            return ChatFormat.Minecraft.red;
+        }
+
+        return ChatFormat.Minecraft.green;
     }
 
     public static void start() {
