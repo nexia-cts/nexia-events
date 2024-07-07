@@ -178,6 +178,7 @@ public class TeamCommand {
 
         TeamUtil.addInvite(player, context.getSource().getPlayer().getTeam().getName());
         context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("Invite sent has been sent to %s!".formatted(player.getScoreboardName())))));
+        player.sendSystemMessage(ChatFormat.convertComponent(Component.text("You have been invited to " + context.getSource().getPlayer().getTeam().getName())));
         player.sendSystemMessage(ChatFormat.convertComponent(yes.append(no)));
 
         return 0;

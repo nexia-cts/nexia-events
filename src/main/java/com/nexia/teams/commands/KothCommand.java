@@ -60,26 +60,23 @@ public class KothCommand {
     private static int listKothGames(CommandContext<CommandSourceStack> context) {
         if (KothGameHandler.kothGames.isEmpty()) {
             context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("There are no KOTH games!"))));
-            return 0;
+            return 1;
         }
 
         Component message = Component.text("List of KOTHs:").color(ChatFormat.Minecraft.white);
 
         for (KothGame kothGame : KothGameHandler.kothGames) {
-            if (kothGame.area != null) {
-                message = message.append(Component.text("\n" + kothGame.name).color(ChatFormat.Minecraft.white)
-                        .append(Component.text(" | ").color(ChatFormat.Minecraft.dark_gray))
-                        .append(Component.text(kothGame.creator)).color(ChatFormat.Minecraft.white)
-                        .append(Component.text(" | ").color(ChatFormat.Minecraft.dark_gray))
-                        .append(Component.text(String.format("(%s, %s, %s)", kothGame.area.getCenter().x, kothGame.area.getCenter().y, kothGame.area.getCenter().z))).color(ChatFormat.Minecraft.white)
-                );
-            } else {
-                message = message.append(Component.text("\n" + kothGame.name).color(ChatFormat.Minecraft.white)
-                        .append(Component.text(" | ").color(ChatFormat.Minecraft.dark_gray))
-                        .append(Component.text(kothGame.creator)).color(ChatFormat.Minecraft.white)
-                );
-            }
+            Component component = Component.newline().append(Component.text(kothGame.name).color(kothGame.isRunning ? ChatFormat.Minecraft.green : ChatFormat.Minecraft.white))
+                    .append(Component.text(" | ").color(ChatFormat.Minecraft.dark_gray))
+                    .append(Component.text(kothGame.creator)).color(ChatFormat.Minecraft.white)
+                    .append(Component.text(" | ").color(ChatFormat.Minecraft.dark_gray))
+                    .append(Component.text("Time: " + kothGame.time)).color(ChatFormat.Minecraft.white)
+                    .append(Component.text(" | ").color(ChatFormat.Minecraft.dark_gray))
+                    .append(Component.text(kothGame.level.dimension().location().toString())).color(ChatFormat.Minecraft.white);
 
+            if (kothGame.area != null) component = component.append(Component.text(" | ").color(ChatFormat.Minecraft.dark_gray)).append(Component.text(String.format("(%s, %s, %s)", kothGame.area.getCenter().x, kothGame.area.getCenter().y, kothGame.area.getCenter().z))).color(ChatFormat.Minecraft.white);
+
+            message = message.append(component);
         }
 
         context.getSource().sendSystemMessage(ChatFormat.convertComponent(message));

@@ -12,12 +12,9 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.ExperienceOrb;
-import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.projectile.Arrow;
-import net.minecraft.world.entity.projectile.SpectralArrow;
-import net.minecraft.world.entity.projectile.ThrownTrident;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
@@ -43,25 +40,8 @@ public abstract class TournamentFight {
     public static AABB blueGate2 = new AABB(-26, 65, -1, -26, 63, 1);
 
     public static void clearStuff(AABB area) {
-        for (ItemEntity entity : ServerTime.minecraftServer.overworld().getEntities(EntityType.ITEM, area, o -> true)) {
-            entity.kill();
-        }
-
-        for (Arrow entity : ServerTime.minecraftServer.overworld().getEntities(EntityType.ARROW, area, o -> true)) {
-            entity.kill();
-        }
-
-        for (SpectralArrow entity : ServerTime.minecraftServer.overworld().getEntities(EntityType.SPECTRAL_ARROW, area, o -> true)) {
-            entity.kill();
-        }
-
-        for (ThrownTrident entity : ServerTime.minecraftServer.overworld().getEntities(EntityType.TRIDENT, area, o -> true)) {
-            entity.kill();
-        }
-
-        for (ExperienceOrb entity : ServerTime.minecraftServer.overworld().getEntities(EntityType.EXPERIENCE_ORB, area, o -> true)) {
-            entity.kill();
-        }
+        List<EntityType<? extends Entity>> entityTypes = List.of(EntityType.ITEM, EntityType.ARROW, EntityType.SPECTRAL_ARROW, EntityType.TRIDENT, EntityType.EXPERIENCE_ORB);
+        entityTypes.forEach(entityType -> ServerTime.minecraftServer.overworld().getEntities(entityType, area, o -> true).forEach(Entity::kill));
     }
 
     public static void fillBlocks(AABB area, Block block) {
@@ -75,15 +55,10 @@ public abstract class TournamentFight {
 
         clearStuff(spawnArea);
 
-        fillBlocks(redGate1, Blocks.RED_STAINED_GLASS);
+        fillBlocks(redGate1, Blocks.MANGROVE_FENCE);
         fillBlocks(redGate2, Blocks.RED_STAINED_GLASS);
         fillBlocks(blueGate1, Blocks.CYAN_STAINED_GLASS);
         fillBlocks(blueGate2, Blocks.CYAN_STAINED_GLASS);
-        for (ServerPlayer player : ServerTime.minecraftServer.getPlayerList().getPlayers()) {
-            if (spawnArea.contains(player.getPosition(0)) && player.level() == ServerTime.minecraftServer.overworld()) {
-                player.teleportTo(ServerTime.minecraftServer.overworld(), redSpawn[0], 70, redSpawn[2], 90, 0);
-            }
-        }
 
         for (String playerName : redTeam.getPlayers()) {
             ServerPlayer serverPlayer = ServerTime.minecraftServer.getPlayerList().getPlayerByName(playerName);
@@ -146,6 +121,12 @@ public abstract class TournamentFight {
 
             teamTitle(String.valueOf(currentStartTime), SoundEvents.NOTE_BLOCK_BIT.value());
             currentStartTime--;
+        }
+
+        if (isRunning || isStarting) {
+            for (Player player : ServerTime.minecraftServer.overworld().getEntities(EntityType.PLAYER, spawnArea, o -> true)) {
+                if (player.getTeam() != blueTeam && player.getTeam() != redTeam) player.teleportTo(redSpawn[0], 70, redSpawn[2]);
+            }
         }
     }
 

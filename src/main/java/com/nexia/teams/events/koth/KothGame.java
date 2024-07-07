@@ -12,6 +12,8 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemLore;
@@ -89,8 +91,8 @@ public class KothGame {
     public void kothSecond() {
         if(!this.isRunning) return;
 
-        for (ServerPlayer serverPlayer : ServerTime.minecraftServer.getPlayerList().getPlayers()) {
-            if (this.area.contains(serverPlayer.getPosition(0.0F)) && this.level == serverPlayer.serverLevel() && !serverPlayer.isDeadOrDying() && serverPlayer.gameMode.isSurvival()) {
+        for (Player player : level.getEntities(EntityType.PLAYER, area, o -> true)) {
+            if (player instanceof ServerPlayer serverPlayer && !serverPlayer.isDeadOrDying() && serverPlayer.gameMode.isSurvival()) {
                 if (playerScores.containsKey(serverPlayer)) {
                     playerScores.put(serverPlayer, playerScores.get(serverPlayer) + 1);
 
