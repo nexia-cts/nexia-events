@@ -98,7 +98,7 @@ public class TeamCommand {
 
         PlayerTeam playerTeam = ServerTime.minecraftServer.getScoreboard().addPlayerTeam(name);
         playerTeam.setSeeFriendlyInvisibles(true);
-        playerTeam.setAllowFriendlyFire(false);
+        playerTeam.setAllowFriendlyFire(true);
         Component teamPrefix = Component.text(playerTeam.getName()).color(NamedTextColor.WHITE)
                 .append(Component.text(" | ").color(ChatFormat.arrowColor));
         playerTeam.setPlayerPrefix(ChatFormat.convertComponent(teamPrefix));
