@@ -43,16 +43,16 @@ public class CalendarGUI extends SimpleGui {
             airSlots++;
         }
 
-        ItemStack day1 = Items.DIAMOND_PICKAXE.getDefaultInstance();
+        ItemStack day1 = Items.GRASS_BLOCK.getDefaultInstance();
         day1.set(DataComponents.CUSTOM_NAME, ChatFormat.convertComponent(
                 Component.text("Day 1: Start Of The World")
                 .decoration(TextDecoration.BOLD, true).decoration(TextDecoration.ITALIC, false)
-                .color(ChatFormat.Minecraft.aqua))
+                .color(ChatFormat.Minecraft.green))
         );
-        day1.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
+        day1.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, false);
         List<net.minecraft.network.chat.Component> list1 = new java.util.ArrayList<>();
         list1.add(ChatFormat.convertComponent(Component.text("15 minute grace period.").color(ChatFormat.Minecraft.gray).decoration(TextDecoration.ITALIC, false)));
-        list1.add(ChatFormat.convertComponent(Component.text("Border will start at 1.5k and expand to 5k.").color(ChatFormat.Minecraft.gray).decoration(TextDecoration.ITALIC, false)));
+        list1.add(ChatFormat.convertComponent(Component.text("Border starts at 1k and expands to 4k.").color(ChatFormat.Minecraft.gray).decoration(TextDecoration.ITALIC, false)));
         day1.set(DataComponents.LORE, new ItemLore(list1));
         this.setSlot(10, day1);
 
@@ -62,56 +62,55 @@ public class CalendarGUI extends SimpleGui {
                         .decoration(TextDecoration.BOLD, true).decoration(TextDecoration.ITALIC, false)
                         .color(ChatFormat.Minecraft.red))
         );
-        day2.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
+        day2.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, false);
         List<net.minecraft.network.chat.Component> list2 = new java.util.ArrayList<>();
-            list2.add(ChatFormat.convertComponent(Component.text("Nether opens. 15 minutes later").color(ChatFormat.Minecraft.gray).decoration(TextDecoration.ITALIC, false)));
-        list2.add(ChatFormat.convertComponent(Component.text("Nether KOTH will take place.").color(ChatFormat.Minecraft.gray).decoration(TextDecoration.ITALIC, false)));
-        list2.add(ChatFormat.convertComponent(Component.text("KOTH reward will be netherite,").color(ChatFormat.Minecraft.gray).decoration(TextDecoration.ITALIC, false)));
-        list2.add(ChatFormat.convertComponent(Component.text("netherite will not be obtainable otherwise.").color(ChatFormat.Minecraft.gray).decoration(TextDecoration.ITALIC, false)));
+            list2.add(ChatFormat.convertComponent(Component.text("The Nether opens, after 30 minutes").color(ChatFormat.Minecraft.gray).decoration(TextDecoration.ITALIC, false)));
+        list2.add(ChatFormat.convertComponent(Component.text("the Nether KOTH begins").color(ChatFormat.Minecraft.gray).decoration(TextDecoration.ITALIC, false)));
+        list2.add(ChatFormat.convertComponent(Component.text("at 0, 0 on the Nether roof.").color(ChatFormat.Minecraft.gray).decoration(TextDecoration.ITALIC, false)));
+        list2.add(ChatFormat.convertComponent(Component.text("Winner gets 3 Netherite.").color(ChatFormat.Minecraft.gray).decoration(TextDecoration.ITALIC, false)));
         day2.set(DataComponents.LORE, new ItemLore(list2));
-        this.setSlot(12, day2);
+        this.setSlot(13, day2);
 
-        ItemStack day3 = Items.SMOOTH_BASALT.getDefaultInstance();
+        ItemStack day3 = Items.FIRE_CHARGE.getDefaultInstance();
         day3.set(DataComponents.CUSTOM_NAME, ChatFormat.convertComponent(
                 Component.text("Day 3: Meteorite Shower")
                         .decoration(TextDecoration.BOLD, true).decoration(TextDecoration.ITALIC, false)
                         .color(ChatFormat.Minecraft.dark_gray))
         );
-        day3.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
+        day3.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, false);
         List<net.minecraft.network.chat.Component> list3 = new java.util.ArrayList<>();
         list3.add(ChatFormat.convertComponent(Component.text("Meteors will land around the map").color(ChatFormat.Minecraft.gray).decoration(TextDecoration.ITALIC, false)));
         list3.add(ChatFormat.convertComponent(Component.text("containing useful items, coords").color(ChatFormat.Minecraft.gray).decoration(TextDecoration.ITALIC, false)));
         list3.add(ChatFormat.convertComponent(Component.text("will be displayed before landing.").color(ChatFormat.Minecraft.gray).decoration(TextDecoration.ITALIC, false)));
         day3.set(DataComponents.LORE, new ItemLore(list3));
-        this.setSlot(14, day3);
+        this.setSlot(16, day3);
 
-        ItemStack day4 = Items.GOLDEN_SWORD.getDefaultInstance();
+        ItemStack day4 = Items.END_CRYSTAL.getDefaultInstance();
         day4.set(DataComponents.CUSTOM_NAME, ChatFormat.convertComponent(
-                Component.text("Day 4: Tournament")
+                Component.text("Day 4: End Fight")
                         .decoration(TextDecoration.BOLD, true).decoration(TextDecoration.ITALIC, false)
-                        .color(ChatFormat.Minecraft.yellow))
+                        .color(ChatFormat.Minecraft.dark_purple))
         );
         day4.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
         List<net.minecraft.network.chat.Component> list4 = new java.util.ArrayList<>();
-        list4.add(ChatFormat.convertComponent(Component.text("At spawn there will be a tournament.").color(ChatFormat.Minecraft.gray).decoration(TextDecoration.ITALIC, false)));
-        list4.add(ChatFormat.convertComponent(Component.text("Teams must be equal in number.").color(ChatFormat.Minecraft.gray).decoration(TextDecoration.ITALIC, false)));
-        list4.add(ChatFormat.convertComponent(Component.text("Each member of the team which wins will each receive a totem.").color(ChatFormat.Minecraft.gray).decoration(TextDecoration.ITALIC, false)));
+        list4.add(ChatFormat.convertComponent(Component.text("The End will open.").color(ChatFormat.Minecraft.gray).decoration(TextDecoration.ITALIC, false)));
+        list4.add(ChatFormat.convertComponent(Component.text("The Dragon will drop an elytra.").color(ChatFormat.Minecraft.gray).decoration(TextDecoration.ITALIC, false)));
         day4.set(DataComponents.LORE, new ItemLore(list4));
-        this.setSlot(16, day4);
+        this.setSlot(28, day4);
 
-        ItemStack day5 = Items.DRAGON_EGG.getDefaultInstance();
+        ItemStack day5 = Items.GOLDEN_SWORD.getDefaultInstance();
         day5.set(DataComponents.CUSTOM_NAME, ChatFormat.convertComponent(
-                Component.text("Day 5: End Fight")
+                Component.text("Day 5: Tournament")
                         .decoration(TextDecoration.BOLD, true).decoration(TextDecoration.ITALIC, false)
-                        .color(ChatFormat.brandColor1))
+                        .color(ChatFormat.Minecraft.yellow))
         );
-        day5.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
+        day5.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, false);
         List<net.minecraft.network.chat.Component> list5 = new java.util.ArrayList<>();
-        list5.add(ChatFormat.convertComponent(Component.text("The End will open.").color(ChatFormat.Minecraft.gray).decoration(TextDecoration.ITALIC, false)));
-        list5.add(ChatFormat.convertComponent(Component.text("Once the dragon dies").color(ChatFormat.Minecraft.gray).decoration(TextDecoration.ITALIC, false)));
-        list5.add(ChatFormat.convertComponent(Component.text("players no longer respawn.").color(ChatFormat.Minecraft.gray).decoration(TextDecoration.ITALIC, false)));
+        list5.add(ChatFormat.convertComponent(Component.text("There will be a tournament at spawn.").color(ChatFormat.Minecraft.gray).decoration(TextDecoration.ITALIC, false)));
+        list5.add(ChatFormat.convertComponent(Component.text("All matches will be equal in players.").color(ChatFormat.Minecraft.gray).decoration(TextDecoration.ITALIC, false)));
+        list5.add(ChatFormat.convertComponent(Component.text("Reward of 3 totems.").color(ChatFormat.Minecraft.gray).decoration(TextDecoration.ITALIC, false)));
         day5.set(DataComponents.LORE, new ItemLore(list5));
-        this.setSlot(30, day5);
+        this.setSlot(31, day5);
 
         ItemStack day6 = Items.BARRIER.getDefaultInstance();
         day6.set(DataComponents.CUSTOM_NAME, ChatFormat.convertComponent(
@@ -119,13 +118,13 @@ public class CalendarGUI extends SimpleGui {
                         .decoration(TextDecoration.BOLD, true).decoration(TextDecoration.ITALIC, false)
                         .color(ChatFormat.Minecraft.white))
         );
-        day6.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
+        day6.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, false);
         List<net.minecraft.network.chat.Component> list6 = new java.util.ArrayList<>();
-        list6.add(ChatFormat.convertComponent(Component.text("The world border will shrink to 500.").color(ChatFormat.Minecraft.gray).decoration(TextDecoration.ITALIC, false)));
-        list6.add(ChatFormat.convertComponent(Component.text("15 minutes later all players will be teleported into").color(ChatFormat.Minecraft.gray).decoration(TextDecoration.ITALIC, false)));
-        list6.add(ChatFormat.convertComponent(Component.text("the tournament arena, last team standing wins.").color(ChatFormat.Minecraft.gray).decoration(TextDecoration.ITALIC, false)));
+        list6.add(ChatFormat.convertComponent(Component.text("Players no longer respawn and the border shrinks.").color(ChatFormat.Minecraft.gray).decoration(TextDecoration.ITALIC, false)));
+        list6.add(ChatFormat.convertComponent(Component.text("After 15 minutes all players are teleported to spawn.").color(ChatFormat.Minecraft.gray).decoration(TextDecoration.ITALIC, false)));
+        list6.add(ChatFormat.convertComponent(Component.text("The last team standing wins.").color(ChatFormat.Minecraft.gray).decoration(TextDecoration.ITALIC, false)));
         day6.set(DataComponents.LORE, new ItemLore(list6));
-        this.setSlot(32, day6);
+        this.setSlot(34, day6);
     }
 
     public static void openCalendarGUI(ServerPlayer player) {
