@@ -1,6 +1,8 @@
 package com.nexia.teams.utilities;
 
 import com.nexia.teams.utilities.time.ServerTime;
+import io.github.blumbo.blfscheduler.BlfRunnable;
+import io.github.blumbo.blfscheduler.BlfScheduler;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -48,9 +50,13 @@ public class CombatUtil {
     public static boolean addPlayer(ServerPlayer player) {
         CombatUtil.logger.debug("Spawning player {} as a fake player.", player.getScoreboardName());
 
-        ServerTime.minecraftServer.getCommands().performPrefixedCommand(ServerTime.minecraftServer.createCommandSourceStack().withPermission(4), "player " + player.getScoreboardName() + " shadow");
-
-        combatLoggedPlayersTimer.put(player.getUUID(), 30);
+        BlfScheduler.delay(10, new BlfRunnable() {
+            @Override
+            public void run() {
+                ServerTime.minecraftServer.getCommands().performPrefixedCommand(ServerTime.minecraftServer.createCommandSourceStack().withPermission(4), "player " + player.getScoreboardName() + " spawn");
+                combatLoggedPlayersTimer.put(player.getUUID(), 30);
+            }
+        });
 
         return getPlayer(player.getUUID()) != null;
     }

@@ -11,6 +11,8 @@ base {
 }
 
 repositories {
+    flatDir { dirs("libraries") }
+
     maven { url 'https://repo.minebench.de/' }
     maven { url 'https://maven.nucleoid.xyz' }
     maven { url 'https://masa.dy.fi/maven' }
@@ -29,8 +31,10 @@ dependencies {
     include(implementation("net.kyori:adventure-text-minimessage:4.17.0-SNAPSHOT"))
     include(implementation("net.kyori:adventure-text-serializer-gson:4.17.0-SNAPSHOT"))
 
+    include(modImplementation("io.github.blumbo:blf-scheduler:1.0.3-${project.minecraft_version}"))
+
     include(implementation("com.google.code.gson:gson:${project.gson_version}"))
-    include(modImplementation include("eu.pb4:sgui:1.5.1+1.20.5"))
+    include(modImplementation "eu.pb4:sgui:1.5.1+1.20.5")
 }
 
 loom {
