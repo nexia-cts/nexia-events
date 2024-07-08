@@ -48,8 +48,16 @@ public class NexiaTeams implements ModInitializer {
 
         ServerLivingEntityEvents.AFTER_DEATH.register(((entity, damageSource) -> {
             if (entity instanceof ServerPlayer) {
-                if (TournamentFight.isRunning && (entity.getTeam() == TournamentFight.blueTeam || entity.getTeam() == TournamentFight.redTeam)) {
-                    TournamentFight.end();
+                if (TournamentFight.isRunning) {
+                    if (entity.getTeam() == TournamentFight.blueTeam) {
+                        entity.removeTag("blue");
+                        if (ServerTime.minecraftServer.overworld().getPlayers(o -> o.getTags().contains("blue")).isEmpty()) TournamentFight.end();
+                    }
+
+                    if (entity.getTeam() == TournamentFight.redTeam) {
+                        entity.removeTag("red");
+                        if (ServerTime.minecraftServer.overworld().getPlayers(o -> o.getTags().contains("red")).isEmpty()) TournamentFight.end();
+                    }
                 }
             }
         }));

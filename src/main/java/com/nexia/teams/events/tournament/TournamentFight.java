@@ -87,15 +87,19 @@ public abstract class TournamentFight {
         for (String playerName : redTeam.getPlayers()) {
             ServerPlayer serverPlayer = ServerTime.minecraftServer.getPlayerList().getPlayerByName(playerName);
             if (serverPlayer == null) continue;
-            serverPlayers.add(serverPlayer);
-            serverPlayer.teleportTo(ServerTime.minecraftServer.overworld(), redSpawn[0], redSpawn[1], redSpawn[2], 90, 0);
+            if (serverPlayer.getTags().contains("red")) {
+                serverPlayers.add(serverPlayer);
+                serverPlayer.teleportTo(ServerTime.minecraftServer.overworld(), redSpawn[0], redSpawn[1], redSpawn[2], 90, 0);
+            }
         }
 
         for (String playerName : blueTeam.getPlayers()) {
             ServerPlayer serverPlayer = ServerTime.minecraftServer.getPlayerList().getPlayerByName(playerName);
             if (serverPlayer == null) continue;
-            serverPlayers.add(serverPlayer);
-            serverPlayer.teleportTo(ServerTime.minecraftServer.overworld(), blueSpawn[0], blueSpawn[1], blueSpawn[2], -90, 0);
+            if (serverPlayer.getTags().contains("blue")) {
+                serverPlayers.add(serverPlayer);
+                serverPlayer.teleportTo(ServerTime.minecraftServer.overworld(), blueSpawn[0], blueSpawn[1], blueSpawn[2], -90, 0);
+            }
         }
     }
 
@@ -149,7 +153,7 @@ public abstract class TournamentFight {
 
         if (isRunning || isStarting) {
             for (Player player : ServerTime.minecraftServer.overworld().getEntities(EntityType.PLAYER, spawnArea, o -> true)) {
-                if (player.getTeam() != blueTeam && player.getTeam() != redTeam) player.teleportTo(redSpawn[0], 70, redSpawn[2]);
+                if (!player.getTags().contains("blue") && !player.getTags().contains("red")) player.teleportTo(redSpawn[0], 70, redSpawn[2]);
             }
         }
     }
