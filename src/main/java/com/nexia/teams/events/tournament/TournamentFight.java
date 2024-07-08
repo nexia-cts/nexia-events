@@ -153,12 +153,15 @@ public abstract class TournamentFight {
 
         if (isRunning || isStarting) {
             for (Player player : ServerTime.minecraftServer.overworld().getEntities(EntityType.PLAYER, spawnArea, o -> true)) {
-                if (!player.getTags().contains("blue") && !player.getTags().contains("red")) player.teleportTo(redSpawn[0], 70, redSpawn[2]);
+                if (!player.getTags().contains("blue") && !player.getTags().contains("red")) player.teleportTo(redSpawn[0], redSpawn[1] + 7, redSpawn[2]);
             }
         }
     }
 
     public static void end() {
+        ServerTime.minecraftServer.overworld().getPlayers(o -> o.getTags().contains("red")).forEach(serverPlayer -> serverPlayer.removeTag("red"));
+        ServerTime.minecraftServer.overworld().getPlayers(o -> o.getTags().contains("blue")).forEach(serverPlayer -> serverPlayer.removeTag("blue"));
+        teamTitle("Game over!", SoundEvents.TRIDENT_THUNDER);
         isRunning = false;
         isStarting = false;
         redTeam = null;
