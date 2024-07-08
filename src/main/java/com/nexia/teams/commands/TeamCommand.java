@@ -249,11 +249,6 @@ public class TeamCommand {
         assert player != null;
         String teamName = TeamUtil.getInvitedTeam(player);
 
-        if (player.getTeam() != null) {
-            player.sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("You're already in a team!"))));
-            return 1;
-        }
-
         if (teamName == null) {
             player.sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("You're not invited to a team!"))));
             return 1;

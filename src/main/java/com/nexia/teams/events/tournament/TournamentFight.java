@@ -1,8 +1,10 @@
 package com.nexia.teams.events.tournament;
 
 import com.google.common.base.Function;
+import com.google.gson.Gson;
 import com.nexia.teams.utilities.chat.ChatFormat;
 import com.nexia.teams.utilities.time.ServerTime;
+import net.fabricmc.loader.api.FabricLoader;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.minecraft.core.BlockPos;
@@ -20,6 +22,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.scores.PlayerTeam;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,14 +34,34 @@ public abstract class TournamentFight {
     public static int currentStartTime = 3;
     public static PlayerTeam redTeam = null;
     public static PlayerTeam blueTeam = null;
-    public static double[] redSpawn = new double[]{24.5, 63, 0.5};
-    public static double[] blueSpawn = new double[]{-23.5, 63, 0.5};
     public static List<ServerPlayer> serverPlayers = new ArrayList<>();
-    public static AABB spawnArea = new AABB(26, 63, 26, -25, 70, -25);
-    public static AABB redGate1 = new AABB(22, 65, -1, 22, 63, 1);
-    public static AABB redGate2 = new AABB(26, 65, -1, 26, 63, 1);
-    public static AABB blueGate1 = new AABB(-22, 65, -1, -22, 63, 1);
-    public static AABB blueGate2 = new AABB(-26, 65, -1, -26, 63, 1);
+    public static double[] redSpawn;
+    public static double[] blueSpawn;
+    public static AABB spawnArea;
+    public static AABB redGate1;
+    public static AABB redGate2;
+    public static AABB blueGate1;
+    public static AABB blueGate2;
+
+    public static void loadTournamentConfig() {
+        try {
+            String directory = FabricLoader.getInstance().getConfigDir().toString() + "/nexia/tournament";
+
+            String json = Files.readString(Path.of(directory + "/config.json"));
+            Gson gson = new Gson();
+            TournamentConfig tournamentConfig = gson.fromJson(json, TournamentConfig.class);
+
+            redSpawn = tournamentConfig.redSpawn;
+            blueSpawn = tournamentConfig.blueSpawn;
+            spawnArea = new AABB(tournamentConfig.spawnArea[0], tournamentConfig.spawnArea[1], tournamentConfig.spawnArea[2], tournamentConfig.spawnArea[3], tournamentConfig.spawnArea[4], tournamentConfig.spawnArea[5]);
+            redGate1 = new AABB(tournamentConfig.redGate1[0], tournamentConfig.redGate1[1], tournamentConfig.redGate1[2], tournamentConfig.redGate1[3], tournamentConfig.redGate1[4], tournamentConfig.redGate1[5]);
+            redGate2 = new AABB(tournamentConfig.redGate2[0], tournamentConfig.redGate2[1], tournamentConfig.redGate2[2], tournamentConfig.redGate2[3], tournamentConfig.redGate2[4], tournamentConfig.redGate2[5]);
+            blueGate1 = new AABB(tournamentConfig.blueGate1[0], tournamentConfig.blueGate1[1], tournamentConfig.blueGate1[2], tournamentConfig.blueGate1[3], tournamentConfig.blueGate1[4], tournamentConfig.blueGate1[5]);
+            blueGate2 = new AABB(tournamentConfig.blueGate2[0], tournamentConfig.blueGate2[1], tournamentConfig.blueGate2[2], tournamentConfig.blueGate2[3], tournamentConfig.blueGate2[4], tournamentConfig.blueGate2[5]);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
 
     public static void clearStuff(AABB area) {
         List<EntityType<? extends Entity>> entityTypes = List.of(EntityType.ITEM, EntityType.ARROW, EntityType.SPECTRAL_ARROW, EntityType.TRIDENT, EntityType.EXPERIENCE_ORB);
@@ -52,7 +76,7 @@ public abstract class TournamentFight {
     }
 
     public static void preStart() {
-
+        loadTournamentConfig();
         clearStuff(spawnArea);
 
         fillBlocks(redGate1, Blocks.RED_STAINED_GLASS);
