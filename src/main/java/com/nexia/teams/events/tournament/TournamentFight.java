@@ -97,7 +97,7 @@ public abstract class TournamentFight {
             }
 
             serverPlayer.setGameMode(GameType.ADVENTURE);
-            ServerTime.minecraftServer.getCommands().performPrefixedCommand(ServerTime.minecraftServer.createCommandSourceStack().withPermission(4), "protect add spawn player " + serverPlayer.getScoreboardName());
+            ServerTime.minecraftServer.getCommands().performPrefixedCommand(ServerTime.minecraftServer.createCommandSourceStack().withPermission(4), "protect exclusion add spawn player " + serverPlayer.getScoreboardName());
         }
     }
 
@@ -163,7 +163,7 @@ public abstract class TournamentFight {
         teamTitle("Game over!", SoundEvents.TRIDENT_THUNDER);
         serverPlayers.forEach(serverPlayer -> {
             serverPlayer.setGameMode(GameType.SURVIVAL);
-            ServerTime.minecraftServer.getCommands().performPrefixedCommand(ServerTime.minecraftServer.createCommandSourceStack().withPermission(4), "protect remove spawn player " + serverPlayer.getScoreboardName());
+            ServerTime.minecraftServer.getCommands().performPrefixedCommand(ServerTime.minecraftServer.createCommandSourceStack().withPermission(4), "protect exclusion remove spawn player " + serverPlayer.getScoreboardName());
         });
         isRunning = false;
         isStarting = false;

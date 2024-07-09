@@ -39,7 +39,7 @@ public class NexiaTeams implements ModInitializer {
             if (entity instanceof ServerPlayer serverPlayer) {
                 if (TournamentFight.isRunning) {
                     serverPlayer.setGameMode(GameType.SURVIVAL);
-                    ServerTime.minecraftServer.getCommands().performPrefixedCommand(ServerTime.minecraftServer.createCommandSourceStack().withPermission(4), "protect remove spawn player " + serverPlayer.getScoreboardName());
+                    ServerTime.minecraftServer.getCommands().performPrefixedCommand(ServerTime.minecraftServer.createCommandSourceStack().withPermission(4), "protect exclusion remove spawn player " + serverPlayer.getScoreboardName());
                     TournamentFight.serverPlayers.remove(serverPlayer);
 
                     if (TournamentFight.serverPlayers.stream().noneMatch(o -> o.getTeam() == TournamentFight.blueTeam)) {
