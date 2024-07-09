@@ -26,7 +26,7 @@ public class CalendarGUI extends SimpleGui {
         }
     }
 
-    private void setMainLayout(ServerPlayer player) {
+    private void setMainLayout() {
         ItemStack emptySlot = new ItemStack(Items.BLACK_STAINED_GLASS_PANE, 1);
         emptySlot.set(DataComponents.CUSTOM_NAME, ChatFormat.convertComponent(Component.text("")));
 
@@ -130,7 +130,7 @@ public class CalendarGUI extends SimpleGui {
     public static void openCalendarGUI(ServerPlayer player) {
         CalendarGUI calendarGUI = new CalendarGUI(MenuType.GENERIC_9x5, player, false);
         calendarGUI.setTitle(ChatFormat.convertComponent(title));
-        calendarGUI.setMainLayout(player);
+        calendarGUI.setMainLayout();
         calendarGUI.open();
     }
 }

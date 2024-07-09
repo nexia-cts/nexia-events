@@ -4,9 +4,11 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import com.nexia.teams.commands.suggestions.KothSuggestionProvider;
 import com.nexia.teams.events.koth.KothGame;
 import com.nexia.teams.events.koth.KothGameHandler;
 import com.nexia.teams.utilities.chat.ChatFormat;
+import com.nexia.teams.utilities.data.KothDataManager;
 import net.kyori.adventure.text.Component;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
@@ -15,6 +17,8 @@ import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+
+import java.io.File;
 
 public class KothCommand {
     static String commandSeparator = ": ";
@@ -37,21 +41,21 @@ public class KothCommand {
                 .then(Commands.literal("list")
                         .executes(KothCommand::listKothGames))
                 .then(Commands.literal("create")
-                        .then(Commands.argument("name", StringArgumentType.word()).executes(context -> createKoth(context, StringArgumentType.getString(context, "name")))))
+                        .then(Commands.argument("name", StringArgumentType.word()).suggests(new KothSuggestionProvider()).executes(context -> createKoth(context, StringArgumentType.getString(context, "name")))))
                 .then(Commands.literal("pos")
-                        .then(Commands.argument("name", StringArgumentType.word()).executes(context -> setKothPos(context, StringArgumentType.getString(context, "name")))))
+                        .then(Commands.argument("name", StringArgumentType.word()).suggests(new KothSuggestionProvider()).executes(context -> setKothPos(context, StringArgumentType.getString(context, "name")))))
                 .then(Commands.literal("start")
-                        .then(Commands.argument("name", StringArgumentType.word()).executes(context -> startKoth(context, StringArgumentType.getString(context, "name")))))
+                        .then(Commands.argument("name", StringArgumentType.word()).suggests(new KothSuggestionProvider()).executes(context -> startKoth(context, StringArgumentType.getString(context, "name")))))
                 .then(Commands.literal("stop")
-                        .then(Commands.argument("name", StringArgumentType.word()).executes(context -> stopKoth(context, StringArgumentType.getString(context, "name")))))
+                        .then(Commands.argument("name", StringArgumentType.word()).suggests(new KothSuggestionProvider()).executes(context -> stopKoth(context, StringArgumentType.getString(context, "name")))))
                 .then(Commands.literal("delete")
-                        .then(Commands.argument("name", StringArgumentType.word()).executes(context -> deleteKoth(context, StringArgumentType.getString(context, "name")))))
+                        .then(Commands.argument("name", StringArgumentType.word()).suggests(new KothSuggestionProvider()).executes(context -> deleteKoth(context, StringArgumentType.getString(context, "name")))))
                 .then(Commands.literal("time")
-                        .then(Commands.argument("name", StringArgumentType.word())
+                        .then(Commands.argument("name", StringArgumentType.word()).suggests(new KothSuggestionProvider())
                                 .then(Commands.argument("time", IntegerArgumentType.integer())
                                         .executes(context -> setKothTime(context, StringArgumentType.getString(context, "name"), IntegerArgumentType.getInteger(context, "time"))))))
                 .then(Commands.literal("schedule")
-                        .then(Commands.argument("name", StringArgumentType.word())
+                        .then(Commands.argument("name", StringArgumentType.word()).suggests(new KothSuggestionProvider())
                                 .then(Commands.argument("epoch", IntegerArgumentType.integer())
                                         .executes(context -> scheduleKoth(context, StringArgumentType.getString(context, "name"), IntegerArgumentType.getInteger(context, "epoch"))))))
         );
@@ -235,6 +239,12 @@ public class KothCommand {
         }
 
         KothGameHandler.kothGames.remove(kothGame);
+        File kothFile = new File(KothDataManager.dataDirectory + "/" + kothGame.name + ".json");
+        if (kothFile.delete()) {
+            context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("KOTH has been deleted."))));
+        } else {
+            context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("There has been an issue deleting the KOTH."))));
+        }
         return 0;
     }
 }

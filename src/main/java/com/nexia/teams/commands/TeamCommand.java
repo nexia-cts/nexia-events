@@ -3,6 +3,7 @@ package com.nexia.teams.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import com.nexia.teams.commands.suggestions.TeamPlayerSuggestionProvider;
 import com.nexia.teams.utilities.chat.ChatFormat;
 import com.nexia.teams.utilities.teams.TeamUtil;
 import com.nexia.teams.utilities.time.ServerTime;
@@ -47,7 +48,8 @@ public class TeamCommand {
                 .then(Commands.literal("invite")
                         .then(Commands.argument("player", EntityArgument.player()).executes(context -> invitePlayer(context, EntityArgument.getPlayer(context, "player")))))
                 .then(Commands.literal("kick")
-                        .then(Commands.argument("player", EntityArgument.player()).executes(context -> kickPlayer(context, EntityArgument.getPlayer(context, "player")))))
+                        .then(Commands.argument("player", StringArgumentType.word()).suggests(new TeamPlayerSuggestionProvider())
+                                .executes(context -> kickPlayer(context, StringArgumentType.getString(context, "player")))))
                 .then(Commands.literal("accept")
                         .executes(TeamCommand::acceptInvite))
                 .then(Commands.literal("decline")
@@ -184,7 +186,7 @@ public class TeamCommand {
         return 0;
     }
 
-    private static int kickPlayer(CommandContext<CommandSourceStack> context, ServerPlayer player) {
+    private static int kickPlayer(CommandContext<CommandSourceStack> context, String player) {
         PlayerTeam playerTeam = context.getSource().getPlayer().getTeam();
 
         if (playerTeam == null) {
@@ -192,7 +194,7 @@ public class TeamCommand {
             return 1;
         }
 
-        if (player.getTeam() != playerTeam) {
+        if (!playerTeam.getPlayers().contains(player)) {
             context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("Can't kick a player from another team!"))));
             return 1;
         }
@@ -202,13 +204,13 @@ public class TeamCommand {
             return 1;
         }
 
-        if (context.getSource().getPlayer() == player) {
+        if (context.getSource().getPlayer().getScoreboardName().equals(player)) {
             context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("You can't kick yourself!"))));
             return 1;
         }
 
-        ServerTime.minecraftServer.getScoreboard().removePlayerFromTeam(player.getScoreboardName(), playerTeam);
-        context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("Player %s has been kicked.".formatted(player.getScoreboardName())))));
+        ServerTime.minecraftServer.getScoreboard().removePlayerFromTeam(player, playerTeam);
+        context.getSource().sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("Player %s has been kicked.".formatted(player)))));
 
         return 0;
     }

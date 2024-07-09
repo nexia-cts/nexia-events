@@ -17,6 +17,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
@@ -37,6 +38,7 @@ public abstract class TournamentFight {
     public static List<ServerPlayer> serverPlayers = new ArrayList<>();
     public static double[] redSpawn;
     public static double[] blueSpawn;
+    public static double[] spectatorSpawn;
     public static AABB spawnArea;
     public static AABB redGate1;
     public static AABB redGate2;
@@ -53,6 +55,7 @@ public abstract class TournamentFight {
 
             redSpawn = tournamentConfig.redSpawn;
             blueSpawn = tournamentConfig.blueSpawn;
+            spectatorSpawn = tournamentConfig.spectatorSpawn;
             spawnArea = new AABB(tournamentConfig.spawnArea[0], tournamentConfig.spawnArea[1], tournamentConfig.spawnArea[2], tournamentConfig.spawnArea[3], tournamentConfig.spawnArea[4], tournamentConfig.spawnArea[5]);
             redGate1 = new AABB(tournamentConfig.redGate1[0], tournamentConfig.redGate1[1], tournamentConfig.redGate1[2], tournamentConfig.redGate1[3], tournamentConfig.redGate1[4], tournamentConfig.redGate1[5]);
             redGate2 = new AABB(tournamentConfig.redGate2[0], tournamentConfig.redGate2[1], tournamentConfig.redGate2[2], tournamentConfig.redGate2[3], tournamentConfig.redGate2[4], tournamentConfig.redGate2[5]);
@@ -84,22 +87,16 @@ public abstract class TournamentFight {
         fillBlocks(blueGate1, Blocks.CYAN_STAINED_GLASS);
         fillBlocks(blueGate2, Blocks.CYAN_STAINED_GLASS);
 
-        for (String playerName : redTeam.getPlayers()) {
-            ServerPlayer serverPlayer = ServerTime.minecraftServer.getPlayerList().getPlayerByName(playerName);
-            if (serverPlayer == null) continue;
-            if (serverPlayer.getTags().contains("red")) {
-                serverPlayers.add(serverPlayer);
+        for (ServerPlayer serverPlayer : serverPlayers) {
+            if (serverPlayer.getTeam() == redTeam) {
                 serverPlayer.teleportTo(ServerTime.minecraftServer.overworld(), redSpawn[0], redSpawn[1], redSpawn[2], 90, 0);
             }
-        }
 
-        for (String playerName : blueTeam.getPlayers()) {
-            ServerPlayer serverPlayer = ServerTime.minecraftServer.getPlayerList().getPlayerByName(playerName);
-            if (serverPlayer == null) continue;
-            if (serverPlayer.getTags().contains("blue")) {
-                serverPlayers.add(serverPlayer);
+            if (serverPlayer.getTeam() == blueTeam) {
                 serverPlayer.teleportTo(ServerTime.minecraftServer.overworld(), blueSpawn[0], blueSpawn[1], blueSpawn[2], -90, 0);
             }
+
+            serverPlayer.setGameMode(GameType.ADVENTURE);
         }
     }
 
@@ -153,15 +150,17 @@ public abstract class TournamentFight {
 
         if (isRunning || isStarting) {
             for (Player player : ServerTime.minecraftServer.overworld().getEntities(EntityType.PLAYER, spawnArea, o -> true)) {
-                if (!player.getTags().contains("blue") && !player.getTags().contains("red")) player.teleportTo(redSpawn[0], redSpawn[1] + 7, redSpawn[2]);
+                if (player instanceof ServerPlayer serverPlayer) {
+                    if (!serverPlayers.contains(serverPlayer))
+                        serverPlayer.teleportTo(spectatorSpawn[0], spectatorSpawn[1], spectatorSpawn[2]);
+                }
             }
         }
     }
 
     public static void end() {
-        ServerTime.minecraftServer.overworld().getPlayers(o -> o.getTags().contains("red")).forEach(serverPlayer -> serverPlayer.removeTag("red"));
-        ServerTime.minecraftServer.overworld().getPlayers(o -> o.getTags().contains("blue")).forEach(serverPlayer -> serverPlayer.removeTag("blue"));
         teamTitle("Game over!", SoundEvents.TRIDENT_THUNDER);
+        serverPlayers.forEach(serverPlayer -> serverPlayer.setGameMode(GameType.SURVIVAL));
         isRunning = false;
         isStarting = false;
         redTeam = null;

@@ -5,7 +5,6 @@ import com.nexia.teams.events.koth.KothGame;
 import com.nexia.teams.events.koth.KothGameHandler;
 import com.nexia.teams.events.meteor.Meteor;
 import com.nexia.teams.events.tournament.TournamentFight;
-import com.nexia.teams.utilities.CombatUtil;
 import com.nexia.teams.utilities.chat.ChatFormat;
 import com.nexia.teams.utilities.data.KothDataManager;
 import com.nexia.teams.utilities.data.NexiaDataManager;
@@ -34,7 +33,7 @@ public abstract class ServerTime {
         NexiaDataManager.saveNexiaData();
         KothGameHandler.stopAllKothGames();
         KothDataManager.saveKothGamesData();
-        CombatUtil.stop();
+        if (TournamentFight.isRunning || TournamentFight.isStarting) TournamentFight.end();
 
         try {
             for (ServerPlayer player : server.getPlayerList().getPlayers()) {
@@ -58,7 +57,6 @@ public abstract class ServerTime {
         totalSecondCount++;
 
         Meteor.second();
-        CombatUtil.second();
         TournamentFight.second();
 
         long unixTime = System.currentTimeMillis() / 1000L;

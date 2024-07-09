@@ -2,7 +2,6 @@ package com.nexia.teams;
 
 import com.nexia.teams.commands.CommandLoader;
 import com.nexia.teams.events.tournament.TournamentFight;
-import com.nexia.teams.utilities.CombatUtil;
 import com.nexia.teams.utilities.chat.ChatFormat;
 import com.nexia.teams.utilities.time.ServerTime;
 import net.fabricmc.api.ModInitializer;
@@ -12,6 +11,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.kyori.adventure.text.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.GameType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,30 +33,20 @@ public class NexiaTeams implements ModInitializer {
             ServerPlayer player = handler.getPlayer();
 
             player.sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("Welcome to Nexia Teams!"))));
-
-            CombatUtil.combatLoggedPlayersTimer.remove(player.getUUID());
-
-            if(player.getTags().contains("scheduleKill")) {
-                player.kill();
-                player.sendSystemMessage(ChatFormat.convertComponent(ChatFormat.nexiaMessage.append(Component.text("You have been killed now due to combat logging (an entity killed you)."))));
-            }
-
-            player.removeTag("scheduleKill");
-            player.removeTag("leavekill");
-
         });
 
         ServerLivingEntityEvents.AFTER_DEATH.register(((entity, damageSource) -> {
-            if (entity instanceof ServerPlayer) {
+            if (entity instanceof ServerPlayer serverPlayer) {
                 if (TournamentFight.isRunning) {
-                    if (entity.getTeam() == TournamentFight.blueTeam) {
-                        entity.removeTag("blue");
-                        if (ServerTime.minecraftServer.overworld().getPlayers(o -> o.getTags().contains("blue")).isEmpty()) TournamentFight.end();
+                    serverPlayer.setGameMode(GameType.SURVIVAL);
+                    TournamentFight.serverPlayers.remove(serverPlayer);
+
+                    if (TournamentFight.serverPlayers.stream().noneMatch(o -> o.getTeam() == TournamentFight.blueTeam)) {
+                        TournamentFight.end();
                     }
 
-                    if (entity.getTeam() == TournamentFight.redTeam) {
-                        entity.removeTag("red");
-                        if (ServerTime.minecraftServer.overworld().getPlayers(o -> o.getTags().contains("red")).isEmpty()) TournamentFight.end();
+                    if (TournamentFight.serverPlayers.stream().noneMatch(o -> o.getTeam() == TournamentFight.redTeam)) {
+                        TournamentFight.end();
                     }
                 }
             }

@@ -1,7 +1,6 @@
 package com.nexia.teams.mixin;
 
 import com.nexia.teams.NexiaTeams;
-import com.nexia.teams.utilities.CombatUtil;
 import com.nexia.teams.utilities.chat.ChatFormat;
 import net.kyori.adventure.text.Component;
 import net.minecraft.network.protocol.game.ServerboundInteractPacket;
@@ -11,6 +10,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.projectile.LargeFireball;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
@@ -41,28 +41,6 @@ public abstract class ServerGamePacketListenerMixin {
         }
     }
 
-    @Inject(method = "onDisconnect", at = @At("HEAD"))
-    private void disconnect(net.minecraft.network.chat.Component component, CallbackInfo ci) {
-        boolean carpetPlayer = component.getString().equalsIgnoreCase("Killed") // /kill
-                || component.getString().equalsIgnoreCase(player.getScoreboardName() + " died") //killed by entity
-        ;
-        player.getCombatTracker().recheckStatus();
-
-        if(player.getCombatTracker().inCombat && !carpetPlayer) {
-            CombatUtil.addPlayer(player);
-        }
-
-        if(carpetPlayer) {
-            CombatUtil.combatLoggedPlayersTimer.remove(player.getUUID());
-            if(!player.getTags().contains("leavekill")) {
-                player.dropEquipment();
-                player.dropExperience();
-
-                player.addTag("scheduleKill");
-            }
-        }
-    }
-
     @Inject(method = "handleTeleportToEntityPacket", at = @At("HEAD"), cancellable = true)
     public void disableSpectatorsTeleporting(ServerboundTeleportToEntityPacket serverboundTeleportToEntityPacket, CallbackInfo ci) {
         if (this.player.isSpectator() && !this.player.hasPermissions(4)) ci.cancel();
@@ -71,6 +49,7 @@ public abstract class ServerGamePacketListenerMixin {
     @Inject(method = "handleInteract", at = @At("HEAD"), cancellable = true)
     public void disableOrEnablePvp(ServerboundInteractPacket serverboundInteractPacket, CallbackInfo ci) {
         final Entity entity = serverboundInteractPacket.getTarget(this.player.serverLevel());
+        if (entity instanceof LargeFireball && entity.getTags().contains("meteor")) ci.cancel();
         if (!NexiaTeams.pvpEnabled && entity instanceof ServerPlayer) ci.cancel();
     }
 
