@@ -30,8 +30,8 @@ public abstract class Meteor {
     }
 
     public static void generateRandomCoordinates() {
-        int randomX = getRandomNumber(300, 2400);
-        int randomZ = getRandomNumber(300, 2400);
+        int randomX = getRandomNumber(300, 1000);
+        int randomZ = getRandomNumber(300, 1000);
 
         if (getRandomNumber(1, 3) % 2 == 0) randomX = randomX * -1;
         if (getRandomNumber(1, 3) % 2 == 0) randomZ = randomZ * -1;
