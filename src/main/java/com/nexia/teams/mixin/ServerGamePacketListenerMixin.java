@@ -68,6 +68,7 @@ public abstract class ServerGamePacketListenerMixin {
     @Inject(method = "handleContainerClick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/AbstractContainerMenu;suppressRemoteUpdates()V"), cancellable = true)
     public void chestRefill(ServerboundContainerClickPacket serverboundContainerClickPacket, CallbackInfo ci) {
         if (player.containerMenu instanceof ChestMenu chestMenu && TournamentFight.spawnArea.contains(player.position())) {
+            if (chestMenu.getContainer().getContainerSize() != 54) return;
             int slot = serverboundContainerClickPacket.getSlotNum();
             int type = serverboundContainerClickPacket.getClickType().ordinal();
 
