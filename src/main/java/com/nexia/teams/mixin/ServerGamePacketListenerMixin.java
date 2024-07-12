@@ -15,6 +15,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.CombatTracker;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.projectile.LargeFireball;
+import net.minecraft.world.entity.vehicle.ContainerEntity;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -63,29 +64,5 @@ public abstract class ServerGamePacketListenerMixin {
     @ModifyArg(method = "handleClientCommand", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;setGameMode(Lnet/minecraft/world/level/GameType;)Z"))
     public GameType deathSystem(GameType gameType) {
         return NexiaTeams.hardcoreEnabled ? GameType.SPECTATOR : this.getPlayer().gameMode.getGameModeForPlayer();
-    }
-
-    @Inject(method = "handleContainerClick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/AbstractContainerMenu;suppressRemoteUpdates()V"), cancellable = true)
-    public void chestRefill(ServerboundContainerClickPacket serverboundContainerClickPacket, CallbackInfo ci) {
-        if (player.containerMenu instanceof ChestMenu chestMenu && TournamentFight.spawnArea.contains(player.position())) {
-            if (chestMenu.getContainer().getContainerSize() != 54) return;
-            int slot = serverboundContainerClickPacket.getSlotNum();
-            int type = serverboundContainerClickPacket.getClickType().ordinal();
-
-            if (slot >= 0 && slot < chestMenu.getContainer().getContainerSize()) {
-                player.connection.send(new ClientboundContainerSetSlotPacket(chestMenu.containerId, chestMenu.incrementStateId(), slot, chestMenu.getSlot(slot).getItem()));
-
-                if (type == ClickType.MOUSE_LEFT.ordinal()) {
-                    ItemStack itemStack = chestMenu.getSlot(slot).getItem().copy();
-                    player.addItem(itemStack);
-                }
-            }
-
-            GuiHelpers.sendSlotUpdate(this.player, -1, -1, chestMenu.getCarried(), chestMenu.getStateId());
-            GuiHelpers.sendPlayerScreenHandler(this.player);
-
-
-            ci.cancel();
-        }
     }
 }

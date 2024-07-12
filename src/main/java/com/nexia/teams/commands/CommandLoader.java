@@ -16,5 +16,6 @@ public class CommandLoader {
         callbackEvent.register(EndCommand::register);
         callbackEvent.register(NetherCommand::register);
         callbackEvent.register(TournamentCommand::register);
+        callbackEvent.register(KitCommand::register);
     }
 }
