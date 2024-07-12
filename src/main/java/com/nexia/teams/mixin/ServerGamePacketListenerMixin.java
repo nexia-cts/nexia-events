@@ -1,16 +1,20 @@
 package com.nexia.teams.mixin;
 
+import com.mojang.authlib.GameProfile;
 import com.nexia.teams.NexiaTeams;
+import com.nexia.teams.events.tournament.TournamentFight;
 import com.nexia.teams.utilities.chat.ChatFormat;
+import com.nexia.teams.utilities.time.ServerTime;
+import eu.pb4.sgui.api.GuiHelpers;
 import net.kyori.adventure.text.Component;
-import net.minecraft.network.protocol.game.ServerboundInteractPacket;
-import net.minecraft.network.protocol.game.ServerboundTeleportToEntityPacket;
-import net.minecraft.network.protocol.game.ServerboundUseItemPacket;
+import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.CombatTracker;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.projectile.LargeFireball;
+import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
@@ -26,6 +30,8 @@ public abstract class ServerGamePacketListenerMixin {
     @Shadow public ServerPlayer player;
 
     @Shadow public abstract ServerPlayer getPlayer();
+
+    @Shadow protected abstract GameProfile playerProfile();
 
     @Inject(method = "handleUseItem", at = @At("TAIL"))
     public void pearlCooldownMessage(ServerboundUseItemPacket serverboundUseItemPacket, CallbackInfo ci) {
@@ -56,5 +62,24 @@ public abstract class ServerGamePacketListenerMixin {
     @ModifyArg(method = "handleClientCommand", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;setGameMode(Lnet/minecraft/world/level/GameType;)Z"))
     public GameType deathSystem(GameType gameType) {
         return NexiaTeams.hardcoreEnabled ? GameType.SPECTATOR : this.getPlayer().gameMode.getGameModeForPlayer();
+    }
+
+    @Inject(method = "handleContainerClick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/AbstractContainerMenu;suppressRemoteUpdates()V"), cancellable = true)
+    public void chestRefill(ServerboundContainerClickPacket serverboundContainerClickPacket, CallbackInfo ci) {
+        if (player.containerMenu instanceof ChestMenu chestMenu && TournamentFight.spawnArea.contains(player.position())) {
+            int slot = serverboundContainerClickPacket.getSlotNum();
+
+            if (slot >= 0 && slot < chestMenu.getContainer().getContainerSize()) {
+                player.connection.send(new ClientboundContainerSetSlotPacket(chestMenu.containerId, chestMenu.incrementStateId(), slot, chestMenu.getSlot(slot).getItem()));
+            }
+
+            GuiHelpers.sendSlotUpdate(this.player, -1, -1, chestMenu.getCarried(), chestMenu.getStateId());
+            GuiHelpers.sendPlayerScreenHandler(this.player);
+
+            ItemStack itemStack = chestMenu.getSlot(slot).getItem().copy();
+            player.addItem(itemStack);
+
+            ci.cancel();
+        }
     }
 }
