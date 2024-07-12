@@ -29,7 +29,7 @@ public class KitGUI extends SimpleGui {
     }
 
     public static void openKitGUI(ServerPlayer player) {
-        KitGUI kitGUI = new KitGUI(MenuType.GENERIC_9x6, player, false);
+        KitGUI kitGUI = new KitGUI(MenuType.GENERIC_9x3, player, false);
         kitGUI.setTitle(ChatFormat.convertComponent(kitGUI.title));
         kitGUI.setMainLayout();
         kitGUI.open();
