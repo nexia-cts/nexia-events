@@ -5,6 +5,7 @@ import com.nexia.teams.NexiaTeams;
 import com.nexia.teams.events.tournament.TournamentFight;
 import com.nexia.teams.utilities.chat.ChatFormat;
 import com.nexia.teams.utilities.time.ServerTime;
+import eu.pb4.sgui.api.ClickType;
 import eu.pb4.sgui.api.GuiHelpers;
 import net.kyori.adventure.text.Component;
 import net.minecraft.network.protocol.game.*;
@@ -68,16 +69,20 @@ public abstract class ServerGamePacketListenerMixin {
     public void chestRefill(ServerboundContainerClickPacket serverboundContainerClickPacket, CallbackInfo ci) {
         if (player.containerMenu instanceof ChestMenu chestMenu && TournamentFight.spawnArea.contains(player.position())) {
             int slot = serverboundContainerClickPacket.getSlotNum();
+            int type = serverboundContainerClickPacket.getClickType().ordinal();
 
             if (slot >= 0 && slot < chestMenu.getContainer().getContainerSize()) {
                 player.connection.send(new ClientboundContainerSetSlotPacket(chestMenu.containerId, chestMenu.incrementStateId(), slot, chestMenu.getSlot(slot).getItem()));
+
+                if (type == ClickType.MOUSE_LEFT.ordinal()) {
+                    ItemStack itemStack = chestMenu.getSlot(slot).getItem().copy();
+                    player.addItem(itemStack);
+                }
             }
 
             GuiHelpers.sendSlotUpdate(this.player, -1, -1, chestMenu.getCarried(), chestMenu.getStateId());
             GuiHelpers.sendPlayerScreenHandler(this.player);
 
-            ItemStack itemStack = chestMenu.getSlot(slot).getItem().copy();
-            player.addItem(itemStack);
 
             ci.cancel();
         }

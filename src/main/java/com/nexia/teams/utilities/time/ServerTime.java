@@ -27,6 +27,7 @@ public abstract class ServerTime {
         ChatFormat.provider = Suppliers.ofInstance(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY)).get();
         NexiaDataManager.loadNexiaData();
         KothDataManager.loadKothGamesData();
+        TournamentFight.loadTournamentConfig();
     }
 
     public static void stopServer(MinecraftServer server) {
