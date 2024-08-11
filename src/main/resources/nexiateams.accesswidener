@@ -1,7 +1,0 @@
-accessWidener   v1   named
-accessible field net/minecraft/world/damagesource/CombatTracker inCombat Z
-accessible field net/minecraft/world/entity/projectile/LargeFireball explosionPower I
-accessible method net/minecraft/world/entity/Display$BlockDisplay setBlockState (Lnet/minecraft/world/level/block/state/BlockState;)V
-accessible method net/minecraft/world/entity/Display setTransformation (Lcom/mojang/math/Transformation;)V
-accessible method net/minecraft/world/entity/LivingEntity dropExperience ()V
-accessible method net/minecraft/world/entity/player/Player dropEquipment ()V
