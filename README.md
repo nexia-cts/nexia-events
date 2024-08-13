@@ -3,9 +3,9 @@
 <img src="https://notcoded.needs.rest/r/nexia.png" height=150 alt="Nexia Logo"/>
 <br>
 
-# Nexia Teams
+# Nexia UHC
 
-The shitty thing
+The Official UHC Mod for Nexia.
 
 </div>
 
@@ -17,5 +17,11 @@ The shitty thing
 ### Build
 - Clone the repository
     - `git clone https://github.com/nexia-cts/nexia-events`
-        - `git checkout nexia-teams`
+        - `git checkout nexia-uhc`
 - Run `./gradlew build`
+
+## Known bugs
+- Cannot light nether portal in UHC
+- Going through the end portal in UHC sends you to the wrong end world
+- Nexus bug: can't use horse menu
+- Nexus bug: can't use chest minecarts

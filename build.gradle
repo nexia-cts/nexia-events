@@ -1,6 +1,5 @@
 plugins {
     id 'fabric-loom' version '1.6-SNAPSHOT'
-    id 'maven-publish'
 }
 
 version = project.mod_version
@@ -28,8 +27,9 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-fabric:${project.mixin_extras_version}")))
 
-    include(implementation("net.kyori:adventure-text-minimessage:4.17.0-SNAPSHOT"))
-    include(implementation("net.kyori:adventure-text-serializer-gson:4.17.0-SNAPSHOT"))
+    include(implementation("net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT"))
+    include(implementation("net.kyori:adventure-text-serializer-gson:4.1.0-SNAPSHOT"))
+    include(implementation("net.kyori:adventure-text-serializer-plain:4.1.0-SNAPSHOT"))
 }
 
 loom {
