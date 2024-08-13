@@ -25,6 +25,11 @@ public class SpectateCommand {
             return 1;
         }
 
+        if (!NexiaUHC.lobby.isInLobby(player)) {
+            context.getSource().sendMessage(Component.text("You need to be in the lobby to run that command!").color(ChatFormat.failColor));
+            context.getSource().getPlayerOrException().playSound(Minecraft.Sound.NOTE_BLOCK_BASS, 1, 1);
+            return 1;        }
+
         player.teleport(new Location(0.5, 80, 0.5, NexiaUHC.manager.getGames().getFirst().getOverworld()));
         return 0;
     }

@@ -62,6 +62,10 @@ public class Game {
         return isPvpEnabled;
     }
 
+    public List<Player> getPlayers() {
+        return players;
+    }
+
     public WrappedWorld getOverworld() {
         return this.overworld;
     }
