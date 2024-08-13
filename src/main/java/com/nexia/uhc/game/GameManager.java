@@ -1,8 +1,12 @@
 package com.nexia.uhc.game;
 
 import com.nexia.nexus.api.world.entity.player.Player;
+import com.nexia.nexus.api.world.types.Minecraft;
 import com.nexia.uhc.NexiaUHC;
 import net.fabricmc.loader.api.FabricLoader;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.title.Title;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -27,8 +31,18 @@ public class GameManager {
 
     public void tickAllGames() {
         for (Game game : this.games) {
-            if (game.players.size() == 1) continue;
-            game.tick();
+            if (game.getPlayers().size() == 1 && game.isRunning) {
+                Player winner = game.getPlayers().getFirst();
+                game.getPlayers().forEach(player -> {
+                    player.sendTitle(Title.title(winner.getName().color(NamedTextColor.GOLD), Component.text("has won the game!")));
+                    player.playSound(Minecraft.Sound.UI_TOAST_CHALLENGE_COMPLETE, 1, 1);
+                });
+
+                NexiaUHC.taskScheduler.schedule(() -> NexiaUHC.manager.deleteGame(game), 100);
+                game.isRunning = false;
+            }
+
+            if (game.isRunning) game.tick();
         }
     }
 

@@ -41,11 +41,13 @@ public class Lobby {
         player.setExperiencePoints(0);
         player.getInventory().setCursorStack(ItemStack.create(Minecraft.Item.AIR));
         player.setGlowing(false);
-        player.setGameMode(gameMode);
         player.setHealth(player.getMaxHealth());
         player.setFoodLevel(20);
         player.setAbleToFly(false);
 
-        if (teleport) player.teleport(this.spawn);
+        if (teleport) {
+            player.setGameMode(gameMode);
+            player.teleport(this.spawn);
+        }
     }
 }

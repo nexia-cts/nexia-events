@@ -15,8 +15,8 @@ public class PlayerLeaveListener {
             Game game = NexiaUHC.manager.getGame(player);
 
             if (game != null) {
-                player.kill();
                 event.setLeaveMessage(player.getName().append(Component.text(" has left during a game!")).color(NamedTextColor.RED));
+                game.getPlayers().remove(player);
                 return;
             }
 

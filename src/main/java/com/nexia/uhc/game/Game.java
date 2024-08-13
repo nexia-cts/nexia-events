@@ -14,7 +14,6 @@ import com.nexia.uhc.utility.MathUtil;
 import net.fabricmc.loader.api.FabricLoader;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.title.Title;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
@@ -104,6 +103,7 @@ public class Game {
     public void start() {
         this.prepare().whenComplete((unused, throwable) -> {
             if (throwable == null) {
+                isRunning = true;
                 ArrayList<int[]> initialPositions = MathUtil.createInitialPositions(new Random(), this.players.size(), -500, 500);
                 this.players.forEach(player -> {
                     int[] pos = initialPositions.get(this.players.indexOf(player));
@@ -121,8 +121,6 @@ public class Game {
     }
 
     public void tick() {
-        if (this.overworld == null) return;
-
         if (!isPvpEnabled && timeUntilPvp > 0) {
             this.players.forEach(player -> player.sendActionBarMessage(ChatFormat.nexiaMessage.append(Component.text("Time until PVP: " + MathUtil.convertTicksToTime(timeUntilPvp)).color(NamedTextColor.GRAY))));
             this.timeUntilPvp--;
@@ -131,16 +129,6 @@ public class Game {
         if (this.isPvpEnabled && this.timeUntilDeathmatch > 0) {
             this.players.forEach(player -> player.sendActionBarMessage(ChatFormat.nexiaMessage.append(Component.text("Time until death match: " + MathUtil.convertTicksToTime(timeUntilDeathmatch)).color(NamedTextColor.GRAY))));
             this.timeUntilDeathmatch--;
-        }
-
-        if (this.players.size() == 1) {
-            Player winner = this.players.getFirst();
-            this.players.forEach(player -> {
-                player.sendTitle(Title.title(winner.getName().color(NamedTextColor.GOLD), Component.text("has won the game!")));
-                player.playSound(Minecraft.Sound.UI_TOAST_CHALLENGE_COMPLETE, 1, 1);
-            });
-
-            NexiaUHC.taskScheduler.schedule(() -> NexiaUHC.manager.deleteGame(this), 300);
         }
     }
 
