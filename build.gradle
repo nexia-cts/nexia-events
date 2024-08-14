@@ -11,10 +11,7 @@ base {
 
 repositories {
     flatDir { dirs("libraries") }
-
     maven { url 'https://repo.minebench.de/' }
-    maven { url 'https://maven.nucleoid.xyz' }
-    maven { url 'https://masa.dy.fi/maven' }
 }
 
 dependencies {
@@ -28,14 +25,10 @@ dependencies {
     include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-fabric:${project.mixin_extras_version}")))
 
     include(implementation("net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT"))
-    include(implementation("net.kyori:adventure-text-serializer-gson:4.1.0-SNAPSHOT"))
-    include(implementation("net.kyori:adventure-text-serializer-plain:4.1.0-SNAPSHOT"))
 }
 
 loom {
-    accessWidenerPath = file("src/main/resources/nexiauhc.accesswidener")
     customMinecraftManifest = "https://gist.githubusercontent.com/rizecookey/4c6142baaccc3875f9b227fe22f2ace5/raw/c8ed74b19f7a5315813c9d4b199798b692a8f359/1.16_combat-6.json"
-
     intermediaryUrl = "https://maven.rizecookey.net/net/fabricmc/intermediary/%1\$s/intermediary-%1\$s-v2.jar"
 }
 
@@ -54,20 +47,16 @@ processResources {
 
 def targetJavaVersion = 21
 tasks.withType(JavaCompile).configureEach {
-    // ensure that the encoding is set to UTF-8, no matter what the system default is
-    // this fixes some edge cases with special characters not displaying correctly
-    // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
-    // If Javadoc is generated, this must be specified in that task too.
     it.options.encoding = "UTF-8"
 
     it.options.release = targetJavaVersion
 }
 
 java {
-    withSourcesJar()
-
     sourceCompatibility = JavaVersion.VERSION_21
     targetCompatibility = JavaVersion.VERSION_21
+
+    withSourcesJar()
 }
 
 jar {

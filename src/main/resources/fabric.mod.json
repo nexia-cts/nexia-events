@@ -12,7 +12,6 @@
   },
   "license": "All-Rights-Reserved",
   "icon": "assets/nexia-uhc/logo.png",
-  "accessWidener": "nexiauhc.accesswidener",
   "environment": "server",
   "entrypoints": {
     "main": [

@@ -15,12 +15,11 @@ public class PlayerLeaveListener {
             Game game = NexiaUHC.manager.getGame(player);
 
             if (game != null) {
-                event.setLeaveMessage(player.getName().append(Component.text(" has left during a game!")).color(NamedTextColor.RED));
                 game.getPlayers().remove(player);
-                return;
             }
 
-            event.setLeaveMessage(ChatFormat.nexiaMessage.append(event.getLeaveMessage().color(NamedTextColor.WHITE)));
+            NexiaUHC.lobby.getPlayers().remove(player);
+            event.setLeaveMessage(ChatFormat.nexiaMessage.append(player.getName().append(Component.text(" left the game")).color(NamedTextColor.WHITE)));
         });
     }
 }
