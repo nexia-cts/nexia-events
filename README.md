@@ -21,7 +21,6 @@ The Official UHC Mod for Nexia.
 - Run `./gradlew build`
 
 ## Known bugs
-- Cannot light nether portal in UHC
-- Going through the end portal in UHC sends you to the wrong end world
+- Stuck on "Loading Terrain..." when going to the end in a dynamic world
 - Nexus bug: can't use horse menu
 - Nexus bug: can't use chest minecarts

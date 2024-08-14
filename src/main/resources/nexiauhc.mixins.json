@@ -4,6 +4,10 @@
   "package": "com.nexia.uhc.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "BaseFireBlockMixin",
+    "EndPortalBlockMixin",
+    "EntityMixin",
+    "PlayerMixin",
     "ServerLevelMixin"
   ],
   "injectors": {
