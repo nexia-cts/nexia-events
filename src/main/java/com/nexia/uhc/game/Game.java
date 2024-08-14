@@ -1,6 +1,5 @@
 package com.nexia.uhc.game;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
@@ -78,8 +77,7 @@ public class Game {
             String worldData = Files.readString(Path.of(FabricLoader.getInstance().getConfigDir() + "/nexia-uhc.json"));
             this.seed = NexiaUHC.minecraftServer.overworld().random.nextLong();
             worldData = worldData.replaceAll("null", String.valueOf(this.seed));
-            JsonElement worldDataJson = new JsonParser().parse(worldData);
-            DataResult<CompoundTag> worldDataNbt = CompoundTag.CODEC.parse(JsonOps.INSTANCE, worldDataJson);
+            DataResult<CompoundTag> worldDataNbt = CompoundTag.CODEC.parse(JsonOps.INSTANCE, new JsonParser().parse(worldData));
             CompoundTag data = new CompoundTag();
             data.put("Data", worldDataNbt.result().orElseThrow());
 
@@ -99,20 +97,18 @@ public class Game {
         }
     }
 
-    @SuppressWarnings("All")
     public void start() {
         this.prepare().whenComplete((unused, throwable) -> {
             if (throwable == null) {
                 isRunning = true;
                 ArrayList<int[]> initialPositions = MathUtil.createInitialPositions(new Random(), this.players.size(), -500, 500);
                 this.players.forEach(player -> {
+                    player.setGameMode(Minecraft.GameMode.SURVIVAL);
                     int[] pos = initialPositions.get(this.players.indexOf(player));
                     int height = this.overworld.unwrap().getChunk(pos[0] >> 4, pos[1] >> 4).getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, pos[0] & 15, pos[1] & 15) + 1;
                     player.teleport(new Location(pos[0] + 0.5, height, pos[1] + 0.5, this.overworld));
                     player.runCommand("loadinventory starter");
                 });
-
-                NexiaUHC.taskScheduler.schedule(this::enablePvp, this.timeUntilPvp);
             } else {
                 NexiaUHC.logger.error("Error loading UHC world: {}", throwable);
                 NexiaUHC.manager.deleteGame(this);
@@ -124,11 +120,13 @@ public class Game {
         if (!isPvpEnabled && timeUntilPvp > 0) {
             this.players.forEach(player -> player.sendActionBarMessage(ChatFormat.nexiaMessage.append(Component.text("Time until PVP: " + MathUtil.convertTicksToTime(timeUntilPvp)).color(NamedTextColor.GRAY))));
             this.timeUntilPvp--;
+            if (this.timeUntilPvp == 0) this.enablePvp();
         }
 
         if (this.isPvpEnabled && this.timeUntilDeathmatch > 0) {
             this.players.forEach(player -> player.sendActionBarMessage(ChatFormat.nexiaMessage.append(Component.text("Time until death match: " + MathUtil.convertTicksToTime(timeUntilDeathmatch)).color(NamedTextColor.GRAY))));
             this.timeUntilDeathmatch--;
+            if (this.timeUntilDeathmatch == 0) this.deathMatch();
         }
     }
 
@@ -138,10 +136,8 @@ public class Game {
             player.sendMessage(ChatFormat.nexiaMessage.append(Component.text("PVP has been enabled!")));
             player.playSound(Minecraft.Sound.ENDER_DRAGON_GROWL, 1, 1);
         });
-        NexiaUHC.taskScheduler.schedule(this::deathMatch, this.timeUntilDeathmatch);
     }
 
-    @SuppressWarnings("All")
     public void deathMatch() {
         ArrayList<int[]> initialPositions = MathUtil.createInitialPositions(new Random(), this.players.size(), -100, 100);
         this.players.forEach(player -> {
